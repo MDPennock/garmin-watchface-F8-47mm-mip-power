@@ -41,8 +41,8 @@ class DateAndTime extends WatchUi.Drawable {
     var minutes = now.min.format(Format.INT_ZERO);
 
     var dateDim = dc.getTextDimensions(date, Settings.resource(Rez.Fonts.DateFont));
-    var dateX = dc.getWidth() * 0.5;
-    var dateY = dc.getHeight() * 0.31 - dateDim[1] / 2.0;
+    var dateX = dc.getWidth() * 0.15;
+    var dateY = dc.getHeight() * 0.30 - dateDim[1] / 2.0;
 
     var hoursDim = dc.getTextDimensions(hours, Settings.resource(Rez.Fonts.HoursFont));
     var hoursX = dc.getWidth() * 0.485;
@@ -63,7 +63,7 @@ class DateAndTime extends WatchUi.Drawable {
     dc.setColor(mBurnInProtectionMode ? Graphics.COLOR_WHITE : themeColor(Color.FOREGROUND), Graphics.COLOR_TRANSPARENT);
 
     // Date
-    dc.drawText(dateX, dateY, Settings.get("useSystemFontForDate") ? Graphics.FONT_TINY : Settings.resource(Rez.Fonts.DateFont), date, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(dateX, dateY, Settings.get("useSystemFontForDate") ? Graphics.FONT_TINY : Settings.resource(Rez.Fonts.DateFont), date, Graphics.TEXT_JUSTIFY_LEFT);
     // Hours
     dc.drawText(hoursX, hoursY, Settings.resource(Rez.Fonts.HoursFont), hours, Graphics.TEXT_JUSTIFY_RIGHT);
     // Minutes

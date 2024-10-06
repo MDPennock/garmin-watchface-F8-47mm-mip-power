@@ -24,11 +24,10 @@
     <param name="y">0.685 * dc.getHeight()</param>
   </drawable>
   
-  <drawable id="BatteryDataField" class="RingDataField">
+  <drawable id="BatteryDataField" class="SecondaryDataField">
     <param name="fieldId">FieldId.SLEEP_BATTERY</param>
     <param name="showIcon">false</param>
     <param name="x">0.5 * dc.getWidth()</param>
     <param name="y">0.5 * dc.getHeight()</param>
-    <param name="radius">0.5 * dc.getWidth() - dc.getWidth() * 0.01</param>
   </drawable>
 </layout>

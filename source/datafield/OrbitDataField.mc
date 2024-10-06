@@ -17,10 +17,11 @@ class OrbitDataField extends DataFieldDrawable {
   }
 
   function draw(dc) {
-    DataFieldDrawable.draw(dc);
-    if (mLastInfo != null) {
-      update(dc);
-    }
+    return;
+    // DataFieldDrawable.draw(dc);
+    // if (mLastInfo != null) {
+    //   update(dc);
+    // }
   }
 
   function update(dc) {
@@ -39,7 +40,7 @@ class OrbitDataField extends DataFieldDrawable {
   }
 
   function partialUpdate(dc) {
-    drawPartialUpdate(dc, method(:update));
+    // drawPartialUpdate(dc, method(:update));
   }
 
   hidden function drawProgressArc(dc, fillLevel, reverse) {

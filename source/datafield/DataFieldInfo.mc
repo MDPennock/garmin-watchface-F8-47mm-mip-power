@@ -38,6 +38,7 @@ module FieldId {
   const SLEEP_ALARMS = 13;
   const SLEEP_NOTIFY = 14;
   const DATE_AND_TIME = 15;
+  const NO_PROGRESS_4 = 16;
 }
 
 module FieldType {
@@ -89,6 +90,8 @@ module DataFieldInfo {
       return getInfoForType(Settings.get("middle2"));
     } else if (fieldId == FieldId.NO_PROGRESS_3) {
       return getInfoForType(Settings.get("middle3"));
+    } else if (fieldId == FieldId.NO_PROGRESS_4) {
+      return getInfoForType(FieldType.BATTERY);
     } else if (fieldId == FieldId.OUTER || fieldId == FieldId.ORBIT_OUTER) {
       return getInfoForType(Settings.get("outer"));
     } else if (fieldId == FieldId.UPPER_1 || fieldId == FieldId.ORBIT_LEFT) {

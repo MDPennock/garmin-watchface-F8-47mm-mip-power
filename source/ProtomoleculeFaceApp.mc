@@ -47,7 +47,7 @@ class ProtomoleculeFaceApp extends Application.AppBase {
   function getInitialView() {
     Settings.initSettings();
     initBackground();
-    return [new ProtomoleculeFaceView()];
+    return [new ProtomoleculeFaceViewMinimal()];
   }
 
   function getServiceDelegate() {

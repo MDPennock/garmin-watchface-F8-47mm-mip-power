@@ -38,7 +38,7 @@ class SecondaryDataField extends DataFieldDrawable {
   }
 
   function partialUpdate(dc) {
-    drawPartialUpdate(dc, method(:update));
+    // drawPartialUpdate(dc, method(:update));
   }
 
   function drawText(dc, text, font, xPos) {

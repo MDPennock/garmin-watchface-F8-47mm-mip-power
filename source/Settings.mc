@@ -134,19 +134,19 @@ module Settings {
     setAsBoolean("showMeridiemText", false);
     setAsBoolean("sleepLayoutActive", false);
     setAsBoolean("useSystemFontForDate", false);
-    setAsBoolean("showSeconds", false);
+    setAsBoolean("showSeconds", true);
 
-    _settings["middle1"] = 5;
-    _settings["middle2"] = 6;
-    _settings["middle3"] = 9;
+    _settings["middle1"] = 1;
+    _settings["middle2"] = 5;
+    _settings["middle3"] = 11;
 
     loadDataFields();
   }
 
   function loadDataFields() {
     _settings["outer"] = 1;
-    _settings["upper1"] = 2;
-    _settings["upper2"] = 3;
+    _settings["upper1"] = 0;
+    _settings["upper2"] = 0;
   }
 
   function determineSleepTime() {
