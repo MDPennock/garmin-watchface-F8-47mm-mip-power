@@ -55,8 +55,10 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
   }
 
   hidden function defaultLayout(dc) {
-    mLastLayout = Settings.get("layout");
-    return mLastLayout == LayoutId.ORBIT ? Rez.Layouts.WatchFace(dc) : Rez.Layouts.WatchFaceAlt(dc);
+    // mLastLayout = Settings.get(layout);
+    // return mLastLayout == LayoutId.ORBIT ? Rez.Layouts.WatchFace(dc) : Rez.Layouts.WatchFaceAlt(dc);
+
+    return Rez.Layouts.WatchFace(dc);
   }
 
   hidden function sleepTimeLayout(dc) {

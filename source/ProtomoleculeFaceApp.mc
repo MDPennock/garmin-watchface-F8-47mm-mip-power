@@ -53,7 +53,8 @@ class ProtomoleculeFaceApp extends Application.AppBase {
   }
 
   function getSettingsView() {
-    return [new ProtomoleculeSettingsMenu(), new ProtomoleculeSettingsDelegate()];
+    // return [new ProtomoleculeSettingsMenu(), new ProtomoleculeSettingsDelegate()];
+    return null;
   }
 
   // New app settings have been received so trigger a UI update
