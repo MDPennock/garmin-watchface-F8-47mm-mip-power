@@ -138,7 +138,7 @@ module Settings {
 
     _settings["middle1"] = 1;
     _settings["middle2"] = 5;
-    _settings["middle3"] = 11;
+    _settings["middle3"] = 13;
 
     loadDataFields();
   }

@@ -56,7 +56,8 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
       mBurnInProtectionMode = false;
       WatchUi.requestUpdate();
     }
-    // Settings.lowPowerMode = false;
+    
+    Settings.lowPowerMode = false;
   }
 
   // Terminate any active timers and prepare for slow updates.
@@ -65,15 +66,16 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
       mBurnInProtectionMode = true;
       WatchUi.requestUpdate();
     }
-    // Settings.lowPowerMode = true;
+    
+    Settings.lowPowerMode = true;
   }
 
-  // too expensive?
-  function onPartialUpdate(dc) {
-    // if (!mLastUpdateSleepTime) {
-    //   updateHeartrate(dc);
-    // }
-  }
+//   // too expensive?
+//   function onPartialUpdate(dc) {
+//     // if (!mLastUpdateSleepTime) {
+//     //   updateHeartrate(dc);
+//     // }
+//   }
 
   function updateHeartrate(dc) {
     if (mActiveHeartrateField != null) {

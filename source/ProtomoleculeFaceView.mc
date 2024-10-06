@@ -172,9 +172,9 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
     return _settings() has :requiresBurnInProtection && _settings().requiresBurnInProtection;
   }
 
-  hidden function getDrawableDataFields() {
-    mNoProgress1 = findDrawableById("NoProgressDataField1");
-    mNoProgress2 = findDrawableById("NoProgressDataField2");
-    mNoProgress3 = findDrawableById("NoProgressDataField3");
-  }
+  // hidden function getDrawableDataFields() {
+  //   mNoProgress1 = findDrawableById("NoProgressDataField1");
+  //   mNoProgress2 = findDrawableById("NoProgressDataField2");
+  //   mNoProgress3 = findDrawableById("NoProgressDataField3");
+  // }
 }

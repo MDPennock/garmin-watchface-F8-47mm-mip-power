@@ -150,6 +150,7 @@ module DataFieldInfo {
   }
 
   function getHeartRateInfo() as DataFieldProperties {
+    // Log.debug("getHeartRateInfo()");
     var heartRate = Activity.getActivityInfo().currentHeartRate;
     var icon = new Lang.Method(DataFieldIcons, :drawHeartRate);
     if (heartRate == null && ActivityMonitor has :getHeartRateHistory) {
@@ -309,8 +310,8 @@ module DataFieldInfo {
       }
     }
     if (stressLevel == null) {
-      Log.debug("Using stress level info");
-      stressLevel = getLatestStressLevelFromSensorHistory();
+      // Log.debug("Using stress level info");
+      // stressLevel = getLatestStressLevelFromSensorHistory();
     }
 
     var fId = FieldType.STRESS_LEVEL;
