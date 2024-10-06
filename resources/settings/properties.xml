@@ -1,8 +1,8 @@
 <properties>  
-  <property id="layout" type="number">0</property>
-  <property id="theme" type="number">0</property>
+  <!-- <property id="layout" type="number">0</property> -->
+  <!-- <property id="theme" type="number">0</property> -->
   
-  <property id="caloriesGoal" type="number">2000</property>
+  <!-- <property id="caloriesGoal" type="number">2000</property>
   <property id="batteryThreshold" type="number">20</property>
   <property id="activeHeartrate" type="boolean">false</property>
   <property id="sleepLayoutActive" type="boolean">false</property>
@@ -23,5 +23,5 @@
 
   <property id="outerOrbitDataField" type="number">1</property>
   <property id="leftOrbitDataField" type="number">2</property>
-  <property id="rightOrbitDataField" type="number">3</property>
+  <property id="rightOrbitDataField" type="number">3</property> -->
 </properties>

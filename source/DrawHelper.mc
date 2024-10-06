@@ -73,7 +73,8 @@ module Color {
 }
 
 function themeColor(sectionId as Number) as Number {
-  var theme = Settings.get("theme") as Number;
+  // var theme = Settings.get("theme") as Number;
+  var theme = 0;
   return Color._COLORS[theme * Color.MAX_COLOR_ID + sectionId];
 }
 

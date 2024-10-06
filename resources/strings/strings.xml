@@ -1,19 +1,20 @@
 <strings>
-  <string id="AppName">Protomolecule Low Battery</string>
+  <string id="AppName">Protomolecule Minimal</string>
 
-  <string id="LayoutOrbit">Orbit (6 Data Fields)</string>
+  <!--<string id="LayoutOrbit">Orbit (6 Data Fields)</string>
   <string id="LayoutOrbitItem">Orbit</string>
   <string id="LayoutOrbitItemSub">6 Data Fields</string>
   <string id="LayoutCircles">Circles (8 Data Fields)</string>
   <string id="LayoutCirclesItem">Circles</string>
   <string id="LayoutCirclesItemSub">8 Data Fields</string>
+-->
 
-  <string id="ThemeExpanse">Expanse</string>
+  <!-- <string id="ThemeExpanse">Expanse</string>
   <string id="ThemeEarth">UN</string>
   <string id="ThemeMars">MCR</string>
   <string id="ThemeBelt">Belt</string>
   <string id="ThemeExpanseLight">Expanse (Light)</string>
-  <string id="ThemeEarthLight">UN (Light)</string>
+  <string id="ThemeEarthLight">UN (Light)</string> -->
 
   <string id="GenericSettingsGroupTitle">General Settings</string>
   <string id="SettingsChooseLayoutTitle">Choose Layout</string>

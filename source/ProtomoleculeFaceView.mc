@@ -22,6 +22,7 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
     WatchFace.initialize();
   }
 
+/*
   function chooseLayout(dc, onLayoutCall) {
     // onLayout
     if (onLayoutCall) {
@@ -54,6 +55,7 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
     return null;
   }
 
+*/
   hidden function defaultLayout(dc) {
     // mLastLayout = Settings.get(layout);
     // return mLastLayout == LayoutId.ORBIT ? Rez.Layouts.WatchFace(dc) : Rez.Layouts.WatchFaceAlt(dc);
@@ -61,6 +63,7 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
     return Rez.Layouts.WatchFace(dc);
   }
 
+/*
   hidden function sleepTimeLayout(dc) {
     mLastUpdateSleepTime = Settings.isSleepTime;
     if (mLastUpdateSleepTime) {
@@ -83,10 +86,10 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
 
   // Load your resources here
   function onLayout(dc) {
-    setLayout(chooseLayout(dc, true));
+    setLayout(defaultLayout(dc));
     getDrawableDataFields();
   }
-
+*/
   // Called when this View is brought to the foreground. Restore
   // the state of this View and prepare it to be shown. This includes
   // loading resources into memory.
@@ -95,12 +98,10 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
   // Update the view
   function onUpdate(dc) {
     clearClip(dc);
-    // Call the parent onUpdate function to redraw the layout
-    var layout = chooseLayout(dc, false);
-    if (layout != null) {
-      setLayout(layout);
-    }
+    
+    setLayout(defaultLayout(dc));
 
+/*
     if (Settings.get("activeHeartrate")) {
       if (Settings.get("middle1") == FieldType.HEART_RATE) {
         mActiveHeartrateField = mNoProgress1;
@@ -114,6 +115,8 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
     } else {
       mActiveHeartrateField = null;
     }
+    */
+    mActiveHeartrateField = null;
 
     View.onUpdate(dc);
   }
@@ -129,7 +132,7 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
       mBurnInProtectionMode = false;
       WatchUi.requestUpdate();
     }
-    Settings.lowPowerMode = false;
+    // Settings.lowPowerMode = false;
   }
 
   // Terminate any active timers and prepare for slow updates.
@@ -138,7 +141,7 @@ class ProtomoleculeFaceView extends WatchUi.WatchFace {
       mBurnInProtectionMode = true;
       WatchUi.requestUpdate();
     }
-    Settings.lowPowerMode = true;
+    // Settings.lowPowerMode = true;
   }
 
   // too expensive?

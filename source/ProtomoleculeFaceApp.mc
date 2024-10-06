@@ -15,10 +15,11 @@ class ProtomoleculeFaceApp extends Application.AppBase {
   }
 
   function determineSleepTime() {
-    var profile = UserProfile.getProfile();
+    // var profile = UserProfile.getProfile();
     var current = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
     current = new Time.Duration(current.hour * 3600 + current.min * 60);
 
+  /*
     if (profile.wakeTime.lessThan(profile.sleepTime)) {
       Settings.isSleepTime = Settings.get("sleepLayoutActive") && (current.greaterThan(profile.sleepTime) || current.lessThan(profile.wakeTime));
     } else if (profile.wakeTime.greaterThan(profile.sleepTime)) {
@@ -26,6 +27,7 @@ class ProtomoleculeFaceApp extends Application.AppBase {
     } else {
       Settings.isSleepTime = false;
     }
+    */
   }
 
   function initBackground() {
@@ -59,13 +61,13 @@ class ProtomoleculeFaceApp extends Application.AppBase {
 
   // New app settings have been received so trigger a UI update
   function onSettingsChanged() {
-    Settings.loadProperties();
-    Settings.determineSleepTime();
+    // Settings.loadProperties();
+    // Settings.determineSleepTime();
     WatchUi.requestUpdate();
   }
 
   function onBackgroundData(data) {
-    Settings.isSleepTime = Settings.get("sleepLayoutActive") && data;
+    // Settings.isSleepTime = Settings.get("sleepLayoutActive") && data;
     WatchUi.requestUpdate();
   }
 }

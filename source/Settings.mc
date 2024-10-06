@@ -12,70 +12,70 @@ module Settings {
     return _settings[key];
   }
 
-  function set(key, value) {
-    _settings[key] = value;
-    if (!setDataField(key, value)) {
-      Properties.setValue(key, value);
+  // function set(key, value) {
+  //   _settings[key] = value;
+  //   if (!setDataField(key, value)) {
+  //     Properties.setValue(key, value);
 
-      if (key.equals("layout")) {
-        loadDataFields();
-      }
-      if (key.equals("sleepLayoutActive")) {
-        determineSleepTime();
-      }
-    }
-  }
+  //     // if (key.equals("layout")) {
+  //     //   loadDataFields();
+  //     // }
+  //     if (key.equals("sleepLayoutActive")) {
+  //       determineSleepTime();
+  //     }
+  //   }
+  // }
 
-  function setDataField(key, value) {
-    if (key.equals("middle1")) {
-      Properties.setValue("noProgressDataField1", value);
-      return true;
-    }
-    if (key.equals("middle2")) {
-      Properties.setValue("noProgressDataField2", value);
-      return true;
-    }
-    if (key.equals("middle3")) {
-      Properties.setValue("noProgressDataField3", value);
-      return true;
-    }
-    if (key.equals("outer")) {
-      if (_settings["layout"] == LayoutId.ORBIT) {
-        Properties.setValue("outerOrbitDataField", value);
-        return true;
-      } else {
-        Properties.setValue("outerDataField", value);
-        return true;
-      }
-    }
-    if (key.equals("upper1")) {
-      if (_settings["layout"] == LayoutId.ORBIT) {
-        Properties.setValue("leftOrbitDataField", value);
-        return true;
-      } else {
-        Properties.setValue("upperDataField1", value);
-        return true;
-      }
-    }
-    if (key.equals("upper2")) {
-      if (_settings["layout"] == LayoutId.ORBIT) {
-        Properties.setValue("rightOrbitDataField", value);
-        return true;
-      } else {
-        Properties.setValue("upperDataField2", value);
-        return true;
-      }
-    }
-    if (key.equals("lower1") && _settings["layout"] == LayoutId.CIRCLES) {
-      Properties.setValue("lowerDataField1", value);
-      return true;
-    }
-    if (key.equals("lower2") && _settings["layout"] == LayoutId.CIRCLES) {
-      Properties.setValue("lowerDataField2", value);
-      return true;
-    }
-    return false;
-  }
+  // function setDataField(key, value) {
+  //   if (key.equals("middle1")) {
+  //     Properties.setValue("noProgressDataField1", value);
+  //     return true;
+  //   }
+  //   if (key.equals("middle2")) {
+  //     Properties.setValue("noProgressDataField2", value);
+  //     return true;
+  //   }
+  //   if (key.equals("middle3")) {
+  //     Properties.setValue("noProgressDataField3", value);
+  //     return true;
+  //   }
+  //   if (key.equals("outer")) {
+  //     if (_settings["layout"] == LayoutId.ORBIT) {
+  //       Properties.setValue("outerOrbitDataField", value);
+  //       return true;
+  //     } else {
+  //       Properties.setValue("outerDataField", value);
+  //       return true;
+  //     }
+  //   }
+  //   if (key.equals("upper1")) {
+  //     if (_settings["layout"] == LayoutId.ORBIT) {
+  //       Properties.setValue("leftOrbitDataField", value);
+  //       return true;
+  //     } else {
+  //       Properties.setValue("upperDataField1", value);
+  //       return true;
+  //     }
+  //   }
+  //   if (key.equals("upper2")) {
+  //     if (_settings["layout"] == LayoutId.ORBIT) {
+  //       Properties.setValue("rightOrbitDataField", value);
+  //       return true;
+  //     } else {
+  //       Properties.setValue("upperDataField2", value);
+  //       return true;
+  //     }
+  //   }
+  //   if (key.equals("lower1") && _settings["layout"] == LayoutId.CIRCLES) {
+  //     Properties.setValue("lowerDataField1", value);
+  //     return true;
+  //   }
+  //   if (key.equals("lower2") && _settings["layout"] == LayoutId.CIRCLES) {
+  //     Properties.setValue("lowerDataField2", value);
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   function resource(resourceId) {
     if (_resources[resourceId] == null) {
@@ -115,18 +115,12 @@ module Settings {
   }
 
   function setAsBoolean(settingsId, defaultValue as Lang.Boolean) {
-    var value = Properties.getValue(settingsId);
-    if (value == null || !(value instanceof Lang.Boolean)) {
-      value = defaultValue;
-    }
+    var value = defaultValue;
     _settings[settingsId] = value;
   }
 
   function setAsNumber(settingsId, defaultValue as Lang.Number) {
-    var value = Properties.getValue(settingsId);
-    if (value == null || !(value instanceof Lang.Number)) {
-      value = defaultValue;
-    }
+    var value = defaultValue;
     _settings[settingsId] = value;
   }
 
@@ -142,22 +136,17 @@ module Settings {
     setAsBoolean("useSystemFontForDate", false);
     setAsBoolean("showSeconds", false);
 
-    _settings["middle1"] = Properties.getValue("noProgressDataField1");
-    _settings["middle2"] = Properties.getValue("noProgressDataField2");
-    _settings["middle3"] = Properties.getValue("noProgressDataField3");
+    _settings["middle1"] = 5;
+    _settings["middle2"] = 6;
+    _settings["middle3"] = 9;
 
     loadDataFields();
   }
 
   function loadDataFields() {
-    _settings["outer"] = _settings["layout"] == LayoutId.ORBIT ? Properties.getValue("outerOrbitDataField") : Properties.getValue("outerDataField");
-    _settings["upper1"] = _settings["layout"] == LayoutId.ORBIT ? Properties.getValue("leftOrbitDataField") : Properties.getValue("upperDataField1");
-    _settings["upper2"] = _settings["layout"] == LayoutId.ORBIT ? Properties.getValue("rightOrbitDataField") : Properties.getValue("upperDataField2");
-
-    if (_settings["layout"] == LayoutId.CIRCLES) {
-      _settings["lower1"] = Properties.getValue("lowerDataField1");
-      _settings["lower2"] = Properties.getValue("lowerDataField2");
-    }
+    _settings["outer"] = 1;
+    _settings["upper1"] = 2;
+    _settings["upper2"] = 3;
   }
 
   function determineSleepTime() {

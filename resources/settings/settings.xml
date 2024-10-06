@@ -1,5 +1,5 @@
 <settings>
-  <setting propertyKey="@Properties.layout" title="@Strings.SettingsLayoutTitle">
+  <!--<setting propertyKey="@Properties.layout" title="@Strings.SettingsLayoutTitle">
     <settingConfig type="list">
       <listEntry value="0">@Strings.LayoutOrbit</listEntry>
       <listEntry value="1">@Strings.LayoutCircles</listEntry>
@@ -14,10 +14,12 @@
       <listEntry value="3">@Strings.ThemeBelt</listEntry>
     </settingConfig>
   </setting>
-
+-->
   <setting propertyKey="@Properties.caloriesGoal" title="@Strings.SettingsCaloriesGoalTitle">
     <settingConfig type="numeric" min="1" max="9999" required="true"/>
   </setting>
+
+  <!--
 
   <setting propertyKey="@Properties.showSeconds" title="@Strings.SettingsShowSecondsTitle">
     <settingConfig type="boolean" required="true"/>
@@ -206,4 +208,5 @@
       <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
     </settingConfig>
   </setting>
+  -->
 </settings>
