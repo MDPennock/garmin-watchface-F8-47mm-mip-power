@@ -3,9 +3,9 @@ import Toybox.Application;
 import Toybox.Graphics;
 import Toybox.System;
 
-class ProtomoleculeFaceViewMinimal extends WatchUi.View {
+class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
   function initialize() {
-    View.initialize();
+    WatchFace.initialize();
   }
 
    // Resources are loaded here
