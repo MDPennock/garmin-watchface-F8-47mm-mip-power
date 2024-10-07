@@ -16,11 +16,11 @@ class DataFieldDrawable extends WatchUi.Drawable {
     mLastInfo = DataFieldInfo.getInfoForField(mFieldId);
   }
 
-  function drawPartialUpdate(dc, drawCallback) {
-    var currentInfo = DataFieldInfo.getInfoForField(mFieldId);
-    if (!currentInfo.equals(mLastInfo)) {
-      mLastInfo = currentInfo;
-      drawCallback.invoke(dc); // invoke update method of child class
-    }
-  }
+  // function drawPartialUpdate(dc, drawCallback) {
+  //   var currentInfo = DataFieldInfo.getInfoForField(mFieldId);
+  //   if (!currentInfo.equals(mLastInfo)) {
+  //     mLastInfo = currentInfo;
+  //     drawCallback.invoke(dc); // invoke update method of child class
+  //   }
+  // }
 }

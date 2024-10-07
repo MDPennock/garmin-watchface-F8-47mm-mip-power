@@ -25,18 +25,19 @@ class OrbitDataField extends DataFieldDrawable {
   }
 
   function update(dc) {
-    setClippingRegion(dc, Settings.get("strokeWidth"));
-    setAntiAlias(dc, true);
-    dc.setPenWidth(Settings.get("strokeWidth"));
-    if (mLastInfo.progress > 1.0) {
-      mLastInfo.progress = 1.0;
-    }
-    // draw remaining arc first so it wont overdraw our endpoint
-    drawRemainingArc(dc, mLastInfo.progress, mLastInfo.reverse);
-    drawProgressArc(dc, mLastInfo.progress, mLastInfo.reverse);
-    drawIcon(dc);
+    return;
+    // setClippingRegion(dc, Settings.get("strokeWidth"));
+    // setAntiAlias(dc, true);
+    // dc.setPenWidth(Settings.get("strokeWidth"));
+    // if (mLastInfo.progress > 1.0) {
+    //   mLastInfo.progress = 1.0;
+    // }
+    // // draw remaining arc first so it wont overdraw our endpoint
+    // drawRemainingArc(dc, mLastInfo.progress, mLastInfo.reverse);
+    // drawProgressArc(dc, mLastInfo.progress, mLastInfo.reverse);
+    // drawIcon(dc);
 
-    setAntiAlias(dc, false);
+    // setAntiAlias(dc, false);
   }
 
   function partialUpdate(dc) {

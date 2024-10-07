@@ -136,9 +136,9 @@ module Settings {
     setAsBoolean("useSystemFontForDate", false);
     setAsBoolean("showSeconds", true);
 
-    _settings["middle1"] = 1;
-    _settings["middle2"] = 5;
-    _settings["middle3"] = 13;
+    _settings["middle1"] = 5;
+    _settings["middle2"] = 13;
+    _settings["middle3"] = 1;
 
     loadDataFields();
   }

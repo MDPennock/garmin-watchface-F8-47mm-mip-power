@@ -53,7 +53,7 @@ class SecondaryDataField extends DataFieldDrawable {
   }
 
   function getDimensions(dc) as Array<Number> {
-    var dim = dc.getTextDimensions("000", Settings.resource(Rez.Fonts.SecondaryIndicatorFont)) as Array<Number>;
+    var dim = dc.getTextDimensions("000K", Settings.resource(Rez.Fonts.SecondaryIndicatorFont)) as Array<Number>;
     dim[0] = dim[0] + Settings.get("iconSize");
     if (dim[1] < Settings.get("iconSize")) {
       dim[1] = Settings.get("iconSize");

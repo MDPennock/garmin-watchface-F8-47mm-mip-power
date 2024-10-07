@@ -225,7 +225,12 @@ module DataFieldInfo {
     var activityInfo = ActivityMonitor.getInfo();
     var current = activityInfo.steps.toDouble();
 
-    return new DataFieldProperties(FieldType.STEPS, new Lang.Method(DataFieldIcons, :drawSteps), current.format(Format.INT), current / activityInfo.stepGoal, false);
+    if (current>999) {
+      current = current / 1000;
+      return new DataFieldProperties(FieldType.STEPS, new Lang.Method(DataFieldIcons, :drawSteps), current.format(Format.INT) + "K", current / activityInfo.stepGoal, false);
+    }else {
+      return new DataFieldProperties(FieldType.STEPS, new Lang.Method(DataFieldIcons, :drawSteps), current.format(Format.INT), current / activityInfo.stepGoal, false);
+    }
   }
 
   function getFloorsClimbedInfo() as DataFieldProperties {
@@ -312,6 +317,7 @@ module DataFieldInfo {
     if (stressLevel == null) {
       // Log.debug("Using stress level info");
       // stressLevel = getLatestStressLevelFromSensorHistory();
+      stressLevel = 0;
     }
 
     var fId = FieldType.STRESS_LEVEL;
