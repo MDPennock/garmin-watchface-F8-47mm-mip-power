@@ -3,79 +3,67 @@ import Toybox.Lang;
 import Toybox.Application;
 
 module Color {
-  const TEXT_ACTIVE as Number = 0;
-  const TEXT_INACTIVE as Number = 1;
-  const PRIMARY as Number = 2;
-  const SECONDARY_1 as Number = 3;
-  const SECONDARY_2 as Number = 4;
-  const BACKGROUND as Number = 5;
-  const FOREGROUND as Number = 6;
-  const INACTIVE as Number = 7;
+  const BACKGROUND as Number = 0;
+  const PRIMARY as Number = 1;
+  const ALERT_GREEN as Number = 2;
+  const ALERT_BLUE as Number = 3;
+  const ALERT_ORANGE as Number = 4;
+  const ALERT_RED as Number = 5;
 
-  const MAX_COLOR_ID as Number = 8;
+  const MAX_COLOR_ID as Number = 6;
 
+// see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
   const _COLORS as Array<Number> = [
-    /* EXPANSE */
-    Graphics.COLOR_WHITE, // TEXT_ACTIVE
-    Graphics.COLOR_LT_GRAY, // TEXT_INACTIVE
-    Graphics.COLOR_YELLOW, // PRIMARY
-    Graphics.COLOR_BLUE, // SECONDARY_1
-    Graphics.COLOR_RED, // SECONDARY_2
+    /* DARK */
     Graphics.COLOR_BLACK, // BACKGROUND
-    Graphics.COLOR_WHITE, // FOREGROUND
-    Graphics.COLOR_DK_GRAY, // INACTIVE,
-    /* EARTH */
-    Graphics.COLOR_WHITE, // TEXT_ACTIVE
-    Graphics.COLOR_LT_GRAY, // TEXT_INACTIVE
-    0x0055aa, // PRIMARY
-    Graphics.COLOR_BLUE, // SECONDARY_1
-    Graphics.COLOR_BLUE, // SECONDARY_2
-    Graphics.COLOR_BLACK, // BACKGROUND
-    Graphics.COLOR_WHITE, // FOREGROUND
-    Graphics.COLOR_DK_GRAY, // INACTIVE
-    /* MARS */
-    Graphics.COLOR_WHITE, // TEXT_ACTIVE
-    Graphics.COLOR_LT_GRAY, // TEXT_INACTIVE
-    Graphics.COLOR_RED, // PRIMARY
-    Graphics.COLOR_ORANGE, // SECONDARY_1
-    Graphics.COLOR_ORANGE, // SECONDARY_2
-    Graphics.COLOR_BLACK, // BACKGROUND
-    Graphics.COLOR_WHITE, // FOREGROUND
-    Graphics.COLOR_DK_GRAY, // INACTIVE
-    /* BELT */
-    Graphics.COLOR_WHITE, // TEXT_ACTIVE
-    Graphics.COLOR_LT_GRAY, // TEXT_INACTIVE
-    Graphics.COLOR_YELLOW, // PRIMARY
-    0xffff00, // SECONDARY_1
-    0xffff00, // SECONDARY_2
-    Graphics.COLOR_BLACK, // BACKGROUND
-    Graphics.COLOR_WHITE, // FOREGROUND
-    Graphics.COLOR_DK_GRAY, // INACTIVE
-    /* EXPANSE (Light) */
-    Graphics.COLOR_BLACK, // TEXT_ACTIVE
-    Graphics.COLOR_DK_GRAY, // TEXT_INACTIVE
-    Graphics.COLOR_YELLOW, // PRIMARY
-    Graphics.COLOR_BLUE, // SECONDARY_1
-    Graphics.COLOR_BLUE, // SECONDARY_2
+    Graphics.COLOR_WHITE, // PRIMARY
+    0xAAFFAA, // ALERT_GREEN
+    0xAAFFFF, // ALERT_BLUE
+    0xFFAA55, // ALERT_ORANGE
+    0xAA0000, // ALERT_RED,
+    /* LIGHT */
     Graphics.COLOR_WHITE, // BACKGROUND
-    Graphics.COLOR_BLACK, // FOREGROUND
-    Graphics.COLOR_LT_GRAY, // INACTIVE
-    /* EARTH (Light) */
-    Graphics.COLOR_BLACK, // TEXT_ACTIVE
-    Graphics.COLOR_DK_GRAY, // TEXT_INACTIVE
-    Graphics.COLOR_DK_BLUE, // PRIMARY
-    Graphics.COLOR_BLUE, // SECONDARY_1
-    Graphics.COLOR_BLUE, // SECONDARY_2
-    Graphics.COLOR_WHITE, // BACKGROUND
-    Graphics.COLOR_BLACK, // FOREGROUND
-    Graphics.COLOR_LT_GRAY, // INACTIVE
+    Graphics.COLOR_BLACK, // PRIMARY
+    0x00AA00, // ALERT_GREEN
+    0x00AAFF, // ALERT_BLUE
+    0xFFAA00, // ALERT_ORANGE
+    0xAA0000, // ALERT_RED,
+    /* NIGHT */
+    Graphics.COLOR_BLACK, // BACKGROUND
+    Graphics.COLOR_DK_RED, // PRIMARY,
+    Graphics.COLOR_GREEN, // ALERT_GREEN
+    Graphics.COLOR_YELLOW, // ALERT_YELLOW
+    Graphics.COLOR_ORANGE, // ALERT_ORANGE
+    Graphics.COLOR_RED, // ALERT_RED,
+  ];
+
+  // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
+  const _HR_COLORS as Array<Number> = [
+    Graphics.COLOR_LT_GRAY, // zone-1 gray
+    Graphics.COLOR_BLUE, // zone 2 blue
+    0x55FF00, // zone 3 green
+    0xFFAA00, // zone 4 yellow
+    0xFF5555, // zone 5 orage
+    0xFF5555, // max red
+    Graphics.COLOR_DK_GRAY, // zone-1 gray
+    0x0055AA, // zone 2 blue
+    0x00AA00, // zone 3 green
+    0xFF5500, // zone 4 yellow
+    0xAA0000, // zone 5 orage
+    0xAA0000, // max red    
   ];
 }
 
 function themeColor(sectionId as Number) as Number {
   // var theme = Settings.get("theme") as Number;
-  var theme = 0;
+  var theme = 1;
   return Color._COLORS[theme * Color.MAX_COLOR_ID + sectionId];
+}
+
+function heartRateColor(sectionId as Number) as Number {
+  // var theme = Settings.get("theme") as Number;
+  var theme = 1;
+  return Color._HR_COLORS[theme * 6 + sectionId];
 }
 
 function setAntiAlias(dc, enabled as Boolean) as Void {

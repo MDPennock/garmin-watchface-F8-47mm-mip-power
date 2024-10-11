@@ -10,5 +10,7 @@ module Log {
 
 (:release)
 module Log {
-  function debug(string) {}
+   function debug(string) {
+    System.println("release :: " + string);
+  }
 }

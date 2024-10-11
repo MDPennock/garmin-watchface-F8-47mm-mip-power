@@ -4,6 +4,30 @@ A Watchface for Garmin Smartwatches. The date and time and all numbers are based
 
 Can now be found in the Garmin store: https://apps.garmin.com/en-US/apps/d9f524cc-b8e3-41df-b0d3-967b1743d165
 
+### Priorities
+
+* Battery life - goal to consume ~2.5% per day on Enduro 3 -- prioritize this over esthetic
+* Health tracking - HR, Stress and steps by default - not configurable
+* Smart Aura - reminder to reduce stress and HR
+
+- Green - calm state, stress <30 during last 15 samples (one sample per min)
+- Yellow - move alert, inactive for 2h, time to take a walk
+- Orange - stress > 70 for more than 2 of 5 samples during last 5min (one sample per min)
+- Red - current heart rate in zone 5
+
+### Optimizations
+
+* Minimizing code running when updating the watch face
+  * Don't use View Layout as resource but rely on manual layout
+  * Minimize number graphics calls, e.g., don't paint minutes in different color
+  * Keep only minimum data fields during low power / always on mode
+
+* All data fields update once when it wakes up or every 15min in background
+* NOT NEEDED - Don't use data fields that have overlap with each out to avoid layered rendering
+* DOESNT WORK - Don't clear background on each display update
+* DOESNT WORK - Update data field and re-render only when data field has changed, e.g., hour should be refreshed only every 60min
+
+
 ### Different Designs
 
 - **Orbit** - Three Indicators that show the progress towards a certain goal

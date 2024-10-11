@@ -94,7 +94,6 @@ module Settings {
     _settings["centerYPos"] = height / 2.0;
 
     loadProperties();
-    determineSleepTime();
 
     DataFieldRez = [
       Rez.Strings.NoDataField,
@@ -148,23 +147,6 @@ module Settings {
     _settings["upper1"] = 0;
     _settings["upper2"] = 0;
   }
-
-  function determineSleepTime() {
-    var profile = UserProfile.getProfile();
-    var current = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-    current = new Time.Duration(current.hour * 3600 + current.min * 60);
-
-    if (profile.wakeTime.lessThan(profile.sleepTime)) {
-      Settings.isSleepTime = get("sleepLayoutActive") && (current.greaterThan(profile.sleepTime) || current.lessThan(profile.wakeTime));
-    } else if (profile.wakeTime.greaterThan(profile.sleepTime)) {
-      Settings.isSleepTime = get("sleepLayoutActive") && current.greaterThan(profile.sleepTime) && current.lessThan(profile.wakeTime);
-    } else {
-      Settings.isSleepTime = false;
-    }
-  }
-
-  var lowPowerMode = false;
-  var isSleepTime = false;
 
   var _settings as Dictionary<String, Object> = {};
   var _resources as Dictionary<Symbol, Object> = {};
