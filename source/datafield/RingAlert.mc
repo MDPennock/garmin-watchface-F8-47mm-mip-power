@@ -40,19 +40,13 @@ class RingAlert {
     }
 
     dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-    clearClip(dc);
-    setAntiAlias(dc, true);
+    // setAntiAlias(dc, true);
     
     dc.setPenWidth(weight);
     dc.drawCircle(centerX, centerY, radius-weight/2+2);
 
-    setAntiAlias(dc, false);
+    // setAntiAlias(dc, false);
 
-    // if (highPowerMode) 
-    {
-      dc.drawText(centerX, msgY, Graphics.FONT_SYSTEM_XTINY, alertMsg, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-    }
-    // var movebar = ActivityMonitor.getInfo().moveBarLevel;
-    // dc.drawText(centerX, msgY/2, Graphics.FONT_SYSTEM_XTINY, movebar, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(centerX, msgY, Graphics.FONT_SYSTEM_XTINY, alertMsg, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
   }
 }

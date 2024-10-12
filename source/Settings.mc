@@ -12,105 +12,9 @@ module Settings {
     return _settings[key];
   }
 
-  // function set(key, value) {
-  //   _settings[key] = value;
-  //   if (!setDataField(key, value)) {
-  //     Properties.setValue(key, value);
-
-  //     // if (key.equals("layout")) {
-  //     //   loadDataFields();
-  //     // }
-  //     if (key.equals("sleepLayoutActive")) {
-  //       determineSleepTime();
-  //     }
-  //   }
-  // }
-
-  // function setDataField(key, value) {
-  //   if (key.equals("middle1")) {
-  //     Properties.setValue("noProgressDataField1", value);
-  //     return true;
-  //   }
-  //   if (key.equals("middle2")) {
-  //     Properties.setValue("noProgressDataField2", value);
-  //     return true;
-  //   }
-  //   if (key.equals("middle3")) {
-  //     Properties.setValue("noProgressDataField3", value);
-  //     return true;
-  //   }
-  //   if (key.equals("outer")) {
-  //     if (_settings["layout"] == LayoutId.ORBIT) {
-  //       Properties.setValue("outerOrbitDataField", value);
-  //       return true;
-  //     } else {
-  //       Properties.setValue("outerDataField", value);
-  //       return true;
-  //     }
-  //   }
-  //   if (key.equals("upper1")) {
-  //     if (_settings["layout"] == LayoutId.ORBIT) {
-  //       Properties.setValue("leftOrbitDataField", value);
-  //       return true;
-  //     } else {
-  //       Properties.setValue("upperDataField1", value);
-  //       return true;
-  //     }
-  //   }
-  //   if (key.equals("upper2")) {
-  //     if (_settings["layout"] == LayoutId.ORBIT) {
-  //       Properties.setValue("rightOrbitDataField", value);
-  //       return true;
-  //     } else {
-  //       Properties.setValue("upperDataField2", value);
-  //       return true;
-  //     }
-  //   }
-  //   if (key.equals("lower1") && _settings["layout"] == LayoutId.CIRCLES) {
-  //     Properties.setValue("lowerDataField1", value);
-  //     return true;
-  //   }
-  //   if (key.equals("lower2") && _settings["layout"] == LayoutId.CIRCLES) {
-  //     Properties.setValue("lowerDataField2", value);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  function resource(resourceId) {
-    if (_resources[resourceId] == null) {
-      _resources[resourceId] = WatchUi.loadResource(resourceId);
-    }
-    return _resources[resourceId];
-  }
-
   function initSettings() {
-    var width = System.getDeviceSettings().screenWidth;
-    var height = System.getDeviceSettings().screenHeight;
-
-    _settings["iconSize"] = Math.round((width + height) / 2 / 12.4);
-    _settings["strokeWidth"] = Math.round((width + height) / 2 / 100);
-    _settings["centerXPos"] = width / 2.0;
-    _settings["centerYPos"] = height / 2.0;
-
-    loadProperties();
-
-    DataFieldRez = [
-      Rez.Strings.NoDataField,
-      Rez.Strings.DataFieldSteps,
-      Rez.Strings.DataFieldBattery,
-      Rez.Strings.DataFieldCalories,
-      Rez.Strings.DataFieldActiveMinutes,
-      Rez.Strings.DataFieldHeartRate,
-      Rez.Strings.DataFieldMessages,
-      Rez.Strings.DataFieldFloorsUp,
-      Rez.Strings.DataFieldFloorsDown,
-      Rez.Strings.DataFieldBluetooth,
-      Rez.Strings.DataFieldAlarms,
-      Rez.Strings.DataFieldBodyBattery,
-      Rez.Strings.DataFieldSeconds,
-      Rez.Strings.DataFieldStressLevel,
-    ];
+    setAsBoolean("showSeconds", false);
+    setAsBoolean("showActiveHR", false); // update HR each time
   }
 
   function setAsBoolean(settingsId, defaultValue as Lang.Boolean) {
@@ -123,33 +27,5 @@ module Settings {
     _settings[settingsId] = value;
   }
 
-  function loadProperties() {
-    setAsNumber("layout", 0);
-    setAsNumber("theme", 0);
-    setAsNumber("caloriesGoal", 2000);
-    setAsNumber("batteryThreshold", 20);
-    setAsBoolean("activeHeartrate", false);
-    setAsBoolean("showOrbitIndicatorText", false);
-    setAsBoolean("showMeridiemText", false);
-    setAsBoolean("sleepLayoutActive", false);
-    setAsBoolean("useSystemFontForDate", false);
-    setAsBoolean("showSeconds", true);
-
-    _settings["middle1"] = 5;
-    _settings["middle2"] = 13;
-    _settings["middle3"] = 1;
-
-    loadDataFields();
-  }
-
-  function loadDataFields() {
-    _settings["outer"] = 1;
-    _settings["upper1"] = 0;
-    _settings["upper2"] = 0;
-  }
-
   var _settings as Dictionary<String, Object> = {};
-  var _resources as Dictionary<Symbol, Object> = {};
 }
-
-var DataFieldRez as Array<ResourceId> = [];

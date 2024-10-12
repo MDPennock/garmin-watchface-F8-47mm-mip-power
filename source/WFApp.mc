@@ -10,17 +10,17 @@ import Toybox.WatchUi;
 class WFApp extends Application.AppBase {
   function initialize() {
     AppBase.initialize();
-    Log.log("WFApp::initialize()");
+    // Log.log("WFApp::initialize()");
   }
 
   // onStart() is called on application start up
   function onStart(state) {
-    Log.log("WFApp::onStart " + state);
+    // Log.log("WFApp::onStart " + state);
   }
 
   // onStop() is called when your application is exiting
   function onStop(state) {
-    Log.log("WFApp::onStop " + state);
+    // Log.log("WFApp::onStop " + state);
   }
 
   // Return the initial view of your application here
