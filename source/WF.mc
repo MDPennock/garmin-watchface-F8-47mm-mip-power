@@ -10,23 +10,13 @@ import Toybox.Lang;
   const FLOAT = "%2.0d";
 }
 
-class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
+class WF extends WatchUi.WatchFace {
   var rl = new RingAlert();
 
   var highpower = true;
   var lastMin = -1; // last time min updated  
   var inactiveMin = 0; // how many minutes we are inactive
-
-  // Layout Positions
-  hidden var dateX = 0;
-  hidden var dateY = 0;
-  hidden var timeX = 0;
-  hidden var timeY = 0;
-  hidden var secX = 0;
-  hidden var batteryX = 0;
-  hidden var hrX;
-  hidden var hrY;
-  hidden var hrIconY;
+  var powerSavingMode = false;
 
   var dateToDraw = "";
   var timeToDraw = "";
@@ -46,6 +36,8 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
   // var df1 = new SecondaryDataField({:fieldId=>FieldId.NO_PROGRESS_1});
 
   function initialize() {
+    Log.log("WF::initialize");
+
     WatchFace.initialize();
 
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
@@ -53,6 +45,8 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
 
    // Resources are loaded here
   function onLayout(dc) {
+    Log.log("WF::onLayout");
+
     rl.prepare(dc);
     prepareLayout(dc);
   }
@@ -60,42 +54,48 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
   // Called when this View is brought to the foreground. Restore
   // the state of this View and prepare it to be shown. This includes
   // loading resources into memory.
-  function onShow() {}
+  function onShow() {
+    Log.log("WF::onShow");
+  }
 
   // Called when this View is removed from the screen. Save the
   // state of this View here. This includes freeing resources from
   // memory.
-  function onHide() {}
+  function onHide() {
+    Log.log("WF::onHide");
+  }
 
   // The user has just looked at their watch. Timers and animations may be started here.
   function onExitSleep() {
-    Log.debug(" - system onExitSleep()");
     highpower = true;
   }
 
   // Terminate any active timers and prepare for slow updates.
   function onEnterSleep() {
-    Log.debug(" - system onEnterSleep()");
     highpower = false;
   }
 
   // Update the view
   function onUpdate(dc) {    
-    var powerSavingMode = false;
+    var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+
     if (highpower && (inactiveMin>0)) {
-      Log.debug(" - enter active/high power mode after " + inactiveMin + " min inactive");
+      if (powerSavingMode) {
+        powerSavingMode = false;
+        Log.log("powersaving=>active, " + inactiveMin + " min inactive");
+      }
+      
       inactiveMin = 0;
     }
 
-    var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
     if (!now.min.equals(lastMin)) {
       lastMin = now.min;
       if (!highpower) {
         inactiveMin ++;
-        if (inactiveMin == 30) {
-          Log.debug(" - enter power saving mode after 30min inactive");
+        if (inactiveMin == 15) {
+          Log.log("* => powersaving after " + inactiveMin + " min");
         }
-        powerSavingMode = inactiveMin>30; // inactive for 30min
+        powerSavingMode = inactiveMin>15; // inactive for 15min
       }
       
       onUpdate_1Min(now, powerSavingMode);
@@ -103,33 +103,37 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
       onUpdate_Immediate();
     }
     
+    drawWF(dc, now, powerSavingMode);
+  }
+
+  hidden function drawWF(dc, now, _powerSavingMode) {
     dc.setColor(themeColor(Color.PRIMARY), themeColor(Color.BACKGROUND));
     dc.clear();
-    
-    // time
-    dc.drawText(timeX, timeY, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
-    if (powerSavingMode) {
+    // time
+    dc.drawText(133, 144, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+    if (_powerSavingMode) {
       return; // don't draw anything more
     }
 
     // battery
-    dc.drawText(batteryX, dateY, Graphics.FONT_TINY, batteryToDraw, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(242, 60, Graphics.FONT_TINY, batteryToDraw, Graphics.TEXT_JUSTIFY_RIGHT);
     // Date
-    dc.drawText(dateX, dateY, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
+    dc.drawText(46, 60, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
     if (Settings.get("showSeconds") && highpower) {
-      dc.drawText(secX, timeY, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(274, 137, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
     }    
 
     // heartRate
     if (heartRate > 0) {
-      dc.drawText(hrX, hrY, Graphics.FONT_LARGE,  heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(150, 236, Graphics.FONT_LARGE,  heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       
       if (heartRateZone > 0) {
         dc.setColor(heartRateColor(heartRateZone-1), Graphics.COLOR_TRANSPARENT);
       }
-      dc.drawText(hrX, hrIconY, iconFont, "p", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(138, 236, iconFont, "p", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
     
     // alert ring
@@ -155,7 +159,7 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
     
     var stressLevel = 0;
     if (ActivityMonitor.Info has :stressScore) {
-      // Log.debug("Using stress score");
+      // Log.log("Using stress score");
       var activityInfo = ActivityMonitor.getInfo();
       if (activityInfo.stressScore != null) {
         stressLevel = activityInfo.stressScore.toDouble();
@@ -188,23 +192,12 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
   }
 
   function prepareLayout(dc) {
-    var w = dc.getWidth();
-    var h = dc.getHeight();
-
-    dateX = w * 0.16;
-    dateY = h * 0.210;
-    timeX = w * 0.475;
-    timeY = h * 0.5;
-    secX  = w * 0.95;
-    batteryX = w * 0.84;
-    hrX = w * 0.495;
-    hrY = h * 0.77;
-    hrIconY = h * 0.87;
+    
   }
 
   function updateHearRate() {
-    var hr = Activity.getActivityInfo().currentHeartRate;
-    // var hr = heartRate + 10;
+    // var hr = Activity.getActivityInfo().currentHeartRate;
+    var hr = heartRate + 10;
     if (hr) {
       heartRate = hr;
 
@@ -217,7 +210,7 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
           break;
         }
       }
-      // Log.debug("HR " + heartRate + " Zone " + heartRateZone);
+      // Log.log("HR " + heartRate + " Zone " + heartRateZone);
     }
   }
 
@@ -227,7 +220,11 @@ class ProtomoleculeFaceViewMinimal extends WatchUi.WatchFace {
     dateToDraw = format("$1$ $2$", [now.day_of_week, now.day.format(Format.INT_ZERO)]);
     timeToDraw = getHours(now, is12Hour) + ":" + now.min.format(Format.INT_ZERO);
 
-    batteryToDraw = System.getSystemStats().battery.format(Format.INT) + "%";
+    var b = System.getSystemStats().battery.format(Format.INT) + "%";
+    if (!batteryToDraw.equals(b)) {
+      Log.log(Lang.format("$1$:$2$:$3$", [now.hour,now.min,now.sec]) + " - battery from " + batteryToDraw + " to " + b);
+      batteryToDraw = b;
+    }
       
     if (!powerSavingMode) {
       updateHearRate();
