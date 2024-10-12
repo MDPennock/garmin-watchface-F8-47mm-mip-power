@@ -36,6 +36,11 @@ class WF extends WatchUi.WatchFace {
     WatchFace.initialize();
 
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
+
+    battery = System.getSystemStats().battery;
+    updateHearRate();
+
+    Log.log("WF::initialize() - battery " + battery + "%");
   }
 
    // Resources are loaded here
@@ -118,12 +123,12 @@ class WF extends WatchUi.WatchFace {
 
     // heartRate
     if (heartRate > 0) {
-      dc.drawText(140, 224, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(140, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
       
       if (heartRateZone > 0) {
         dc.setColor(heartRateColor(heartRateZone-1), Graphics.COLOR_TRANSPARENT);
       }
-      dc.drawText(130, 225, iconFont, "p", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(140, 225, iconFont, "0", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
     
     // alert ring
@@ -238,8 +243,11 @@ class WF extends WatchUi.WatchFace {
   // otherwise ad-hoc when system wants
   // this function is not called when onUpdate_1Min() gets called
   function onUpdate_Immediate() {
-    if (highpower && Settings.get("showActiveHR")) {
-      updateHearRate();
+    if (highpower) {
+      if (Settings.get("showActiveHR") || heartRateZone>0) {
+        // update heart rate when active if in zone 1-5 or setting enabled
+        updateHearRate();
+      }
     }
   }
 }
