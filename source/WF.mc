@@ -128,7 +128,8 @@ class WF extends WatchUi.WatchFace {
 
     // heartRate
     if (heartRate > 0) {
-      dc.drawText(140, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      // dc.drawText(140, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(160, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       
       if (heartRateZone > 0) {
         dc.setColor(heartRateColor(heartRateZone-1), Graphics.COLOR_TRANSPARENT);
@@ -139,7 +140,6 @@ class WF extends WatchUi.WatchFace {
     // alert ring
     rl.draw(dc);
   }
-
 
   hidden function getHours(now, is12Hour) {
     var hours = now.hour;
@@ -225,8 +225,8 @@ class WF extends WatchUi.WatchFace {
   }
 
   function updateHearRate() {
-    var hr = Activity.getActivityInfo().currentHeartRate;
-    // var hr = heartRate + 10;
+    // var hr = Activity.getActivityInfo().currentHeartRate;
+    var hr = heartRate + 10;
     if (hr) {
       heartRate = hr;
 
