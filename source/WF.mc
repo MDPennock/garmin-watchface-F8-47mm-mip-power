@@ -40,8 +40,6 @@ class WF extends WatchUi.WatchFace {
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
 
     battery = System.getSystemStats().battery;
-    updateHearRate();
-
     Log.log("WF::initialize() - battery " + battery + "%");
   }
 
@@ -268,7 +266,10 @@ class WF extends WatchUi.WatchFace {
   // this function is not called when onUpdate_1Min() gets called
   function onUpdate_Immediate() {
     if (highpower) {
-      if (heartRateZone >= Settings.get("updateHRZone")) {
+      if (heartRate == 0) {
+        // update during start when heartrate number not available
+        updateHearRate();
+      }else if (heartRateZone >= Settings.get("updateHRZone")) {
         // update heart rate when active if in zone specified by the setting
         updateHearRate();
       }
