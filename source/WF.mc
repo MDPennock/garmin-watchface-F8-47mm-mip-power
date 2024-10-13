@@ -225,8 +225,8 @@ class WF extends WatchUi.WatchFace {
   }
 
   function updateHearRate() {
-    // var hr = Activity.getActivityInfo().currentHeartRate;
-    var hr = heartRate + 10;
+    var hr = Activity.getActivityInfo().currentHeartRate;
+    // var hr = heartRate + 10;
     if (hr) {
       heartRate = hr;
 
