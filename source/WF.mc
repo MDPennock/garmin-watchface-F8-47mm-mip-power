@@ -31,6 +31,8 @@ class WF extends WatchUi.WatchFace {
   hidden var stressLowCount = 0;
   hidden var stressHighCount = 0;
   hidden var noStressValueCount = 0;
+  hidden var stressLowAlertActive = false;
+  hidden var stressHighAlertActive = false;
 
   function initialize() {
     WatchFace.initialize();
@@ -87,10 +89,13 @@ class WF extends WatchUi.WatchFace {
       lastMin = now.min;
       if (!highpower) {
         inactiveMin ++;
-        if (inactiveMin == 15) {
+        if (inactiveMin == Settings.get("powerSavingMin")) {
           Log.log("* => powersaving after " + inactiveMin + " min");
+          powerSavingMode = true;
+
+          onEnterPowerSaving();
         }
-        powerSavingMode = inactiveMin>15; // inactive for 15min
+        
       }
       
       onUpdate_1Min(now, powerSavingMode);
@@ -179,25 +184,44 @@ class WF extends WatchUi.WatchFace {
       } else {
         stressLowCount = 0;
       }
-    } else {
+
+      if (stressHighCount> 3 && (!stressHighAlertActive)) {        
+        stressHighAlertActive = true;
+        Log.log("** high stress alert");
+      }
+      
+      if (stressLowCount>10 && (!stressLowAlertActive)) {
+        stressLowAlertActive = true;
+        Log.log("** low stress alert");
+      }
+    } else if (stressHighAlertActive || stressLowAlertActive) {
+      resetStressCounts();
+    }else {
       noStressValueCount ++;
 
-      if (noStressValueCount > 5) {
-        // no value for 5min -> reset
+      if (noStressValueCount > 3) {
+        // no value for 3min during active stress -> reset
         stressHighCount = 0;
         stressLowCount = 0;
       }
     }
 
-    if (stressHighCount >= 3) {
+    if (stressHighAlertActive) {
       rl.setAlert("Stress " + stressLevel.format(Format.INT), themeColor(Color.ALERT_ORANGE));
-    } else if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
-      rl.setAlert("Time to Move", themeColor(Color.ALERT_BLUE));
-    } else if (stressLowCount>=3) {
-      rl.setAlert("Calm" + stressLevel.format(Format.INT), themeColor(Color.ALERT_GREEN));
-    } else {
-      rl.setAlert("", null);
+      return;
     }
+    
+    if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
+      rl.setAlert("Time to Move", themeColor(Color.ALERT_BLUE));
+      return;
+    }
+    
+    if (stressLowAlertActive) {
+      rl.setAlert("Calm" + stressLevel.format(Format.INT), themeColor(Color.ALERT_GREEN));
+      return;
+    }
+    
+    rl.setAlert("", null);
   }
 
   function updateHearRate() {
@@ -244,11 +268,24 @@ class WF extends WatchUi.WatchFace {
   // this function is not called when onUpdate_1Min() gets called
   function onUpdate_Immediate() {
     if (highpower) {
-      if (Settings.get("showActiveHR") || heartRateZone>0) {
-        // update heart rate when active if in zone 1-5 or setting enabled
+      if (heartRateZone >= Settings.get("updateHRZone")) {
+        // update heart rate when active if in zone specified by the setting
         updateHearRate();
       }
     }
+  }
+
+  function onEnterPowerSaving() {
+    resetStressCounts();
+  }
+
+  function resetStressCounts() {
+      stressLowCount = 0;
+      stressHighCount = 0;
+      noStressValueCount = 0;
+
+      stressLowAlertActive = false;
+      stressHighAlertActive = false;
   }
 }
 

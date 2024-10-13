@@ -13,8 +13,10 @@ module Settings {
   }
 
   function initSettings() {
-    setAsBoolean("showSeconds", false);
-    setAsBoolean("showActiveHR", false); // update HR each time
+    setAsBoolean("showSeconds", false); // show seconds when active
+    setAsNumber("updateHRZone", 2); // Higher HR zones have active HR update
+
+    setAsNumber("powerSavingMin", 10); // Minutes inactive to enter power saving mode
   }
 
   function setAsBoolean(settingsId, defaultValue as Lang.Boolean) {
