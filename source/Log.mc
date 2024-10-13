@@ -7,7 +7,7 @@ import Toybox.Time;
 module Log {
   function log(string) {
     var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-    System.println(Lang.format("$1$$2$$3$D: ", [now.hour,now.min,now.sec]) + string);
+    System.println(Lang.format("$1$:$2$:$3$D: ", [now.hour,now.min,now.sec]) + string);
   }
 }
 
@@ -15,6 +15,6 @@ module Log {
 module Log {
    function log(string) {
     var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-    System.println(Lang.format("$1$$2$$3$: ", [now.hour,now.min,now.sec]) + string);
+    System.println(Lang.format("$1$:$2$:$3$: ", [now.hour,now.min,now.sec]) + string);
   }
 }
