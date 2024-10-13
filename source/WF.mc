@@ -109,7 +109,7 @@ class WF extends WatchUi.WatchFace {
     dc.clear();
 
     // time
-    dc.drawText(133, 144, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(144, 140, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
     if (powerSavingMode) {
       return; // don't draw anything more
@@ -121,7 +121,7 @@ class WF extends WatchUi.WatchFace {
     dc.drawText(46, 70, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
     if (Settings.get("showSeconds") && highpower) {
-      dc.drawText(265, 135, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(144, 186, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }    
 
     // heartRate
@@ -171,32 +171,41 @@ class WF extends WatchUi.WatchFace {
     if (stressLevel>0) {
       noStressValueCount = 0;
 
+      // detect high stress
       if (stressLevel >=60) {
         stressHighCount ++;
       }else {
         stressHighCount = 0;
       }
+      if (stressHighCount>= 3) {
+        if (!stressHighAlertActive) {
+          stressHighAlertActive = true;
+          Log.log("** high stress alert");
+        }        
+      }else {
+        stressHighAlertActive = false;
+      }
       
+      // detect low stress
       if (stressLevel <=30) {
         stressLowCount ++;
       } else {
         stressLowCount = 0;
       }
-
-      if (stressHighCount> 3 && (!stressHighAlertActive)) {        
-        stressHighAlertActive = true;
-        Log.log("** high stress alert");
-      }
-      
-      if (stressLowCount>10 && (!stressLowAlertActive)) {
-        stressLowAlertActive = true;
-        Log.log("** low stress alert");
+      if (stressLowCount>=10) {
+        if (!stressLowAlertActive) {
+          stressLowAlertActive = true;
+          Log.log("** low stress alert");
+        }
+        
+      }else {
+        stressLowAlertActive = false;
       }
     } else if (stressHighAlertActive || stressLowAlertActive) {
       resetStressCounts();
     }else {
+      // don't reset stress counter on tempory loss of stress data
       noStressValueCount ++;
-
       if (noStressValueCount > 3) {
         // no value for 3min during active stress -> reset
         stressHighCount = 0;
