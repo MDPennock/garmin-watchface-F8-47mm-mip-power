@@ -4,7 +4,7 @@ import Toybox.Graphics;
 import Toybox.System;
 import Toybox.Lang;
 
- module Format {
+module Format {
   const INT_ZERO = "%02d";
   const INT = "%i";
   const FLOAT = "%2.0d";
@@ -13,7 +13,7 @@ import Toybox.Lang;
 class WF extends WatchUi.WatchFace {
   var rl = new RingAlert();
 
-  var highpower = true;
+  var isWatchActive = true;
   var lastMin = -1; // last time min updated  
   var inactiveMin = 0; // how many minutes we are inactive
   var powerSavingMode = false;
@@ -28,14 +28,16 @@ class WF extends WatchUi.WatchFace {
   var iconFont;
 
   // Alerts
-  hidden var stressLowCount = 0;
   hidden var stressHighCount = 0;
-  hidden var noStressValueCount = 0;
-  hidden var stressLowAlertActive = false;
-  hidden var stressHighAlertActive = false;
+  hidden var activeAlert = :alertNone;
 
+  var settings = new WFSettings();
+  var theme = 1;
+  
   function initialize() {
     WatchFace.initialize();
+    
+    reloadSettings(); // preload setting values (theme is read multiple times so good to cache)
 
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
 
@@ -62,19 +64,19 @@ class WF extends WatchUi.WatchFace {
 
   // The user has just looked at their watch. Timers and animations may be started here.
   function onExitSleep() {
-    highpower = true;
+    isWatchActive = true;
   }
 
   // Terminate any active timers and prepare for slow updates.
   function onEnterSleep() {
-    highpower = false;
+    isWatchActive = false;
   }
 
   // Update the view
-  function onUpdate(dc) {    
+  function onUpdate(dc) {
     var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 
-    if (highpower && (inactiveMin>0)) {
+    if (isWatchActive && (inactiveMin>0)) {
       if (powerSavingMode) {
         powerSavingMode = false;
         Log.log("powersaving=>active, " + inactiveMin + " min inactive");
@@ -85,9 +87,9 @@ class WF extends WatchUi.WatchFace {
 
     if (!now.min.equals(lastMin)) {
       lastMin = now.min;
-      if (!highpower) {
+      if (!isWatchActive) {
         inactiveMin ++;
-        if (inactiveMin == Settings.get("powerSavingMin")) {
+        if (inactiveMin == settings.get("powerSavingMin")) {
           Log.log("* => powersaving after " + inactiveMin + " min");
           powerSavingMode = true;
 
@@ -116,11 +118,11 @@ class WF extends WatchUi.WatchFace {
     }
 
     // battery
-    dc.drawText(235, 70, Graphics.FONT_TINY, battery.format(Format.INT) + "%", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(237, 68, Graphics.FONT_TINY, battery.format(Format.INT) + "%", Graphics.TEXT_JUSTIFY_RIGHT);
     // Date
-    dc.drawText(46, 70, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
+    dc.drawText(48, 68, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
-    if (Settings.get("showSeconds") && highpower) {
+    if (settings.get("showSeconds") && isWatchActive) {
       dc.drawText(144, 186, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }    
 
@@ -153,87 +155,50 @@ class WF extends WatchUi.WatchFace {
   }
 
   function checkAlerts() {
-    if (heartRateZone >= 5) {
-      rl.setAlert("High HR", themeColor(Color.ALERT_RED));
+    if (heartRateZone >= 5 && settings.get("heartRateAlert")) {
+      setAlert(:alertHR, "High HR", themeColor(Color.ALERT_RED));
       return;
     }
 
-    var stressLevel = 0;
-    var movebar = 0;
-    var activityInfo = ActivityMonitor.getInfo();
-    if (activityInfo.stressScore != null) {
-      stressLevel = activityInfo.stressScore.toNumber();
-    }
-    if (activityInfo.moveBarLevel != null) {
-      movebar = activityInfo.moveBarLevel.toNumber();
-    }
-
-    if (stressLevel>0) {
-      noStressValueCount = 0;
-
-      // detect high stress
-      if (stressLevel >=60) {
+    var stressAlertLevel = settings.get("stressAlertLevel");
+    // 100 is disabled
+    if (stressAlertLevel < 100 ) {
+      var stressLevel = 0;
+      var activityInfo = ActivityMonitor.getInfo();
+      if (activityInfo.stressScore != null) {
+        stressLevel = activityInfo.stressScore.toNumber();
+      }
+      if (stressLevel>=stressAlertLevel) {
         stressHighCount ++;
-      }else {
-        stressHighCount = 0;
-      }
-      if (stressHighCount>= 3) {
-        if (!stressHighAlertActive) {
-          stressHighAlertActive = true;
-          Log.log("** high stress alert");
-        }        
-      }else {
-        stressHighAlertActive = false;
-      }
-      
-      // detect low stress
-      if (stressLevel <=30) {
-        stressLowCount ++;
       } else {
-        stressLowCount = 0;
-      }
-      if (stressLowCount>=10) {
-        if (!stressLowAlertActive) {
-          stressLowAlertActive = true;
-          Log.log("** low stress alert");
-        }
-        
-      }else {
-        stressLowAlertActive = false;
-      }
-    } else if (stressHighAlertActive || stressLowAlertActive) {
-      resetStressCounts();
-    }else {
-      // don't reset stress counter on tempory loss of stress data
-      noStressValueCount ++;
-      if (noStressValueCount > 3) {
-        // no value for 3min during active stress -> reset
         stressHighCount = 0;
-        stressLowCount = 0;
+      }
+      if (stressHighCount >= 3) {
+        setAlert(:alertStress, "Stress " + stressLevel.format(Format.INT), themeColor(Color.ALERT_ORANGE));
+        return;
       }
     }
+    
+    if (settings.get("moveAlert")) {
+      var movebar = 0;
+      var activityInfo = ActivityMonitor.getInfo();
+      if (activityInfo.moveBarLevel != null) {
+        movebar = activityInfo.moveBarLevel.toNumber();
+      }
+      // movebar = ActivityMonitor.MOVE_BAR_LEVEL_MAX;
+      if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
+        setAlert(:alertMove, "Time to Move", themeColor(Color.ALERT_BLUE));
+        return;
+      }
+    }    
 
-    if (stressHighAlertActive) {
-      rl.setAlert("Stress " + stressLevel.format(Format.INT), themeColor(Color.ALERT_ORANGE));
-      return;
-    }
-    
-    if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
-      rl.setAlert("Time to Move", themeColor(Color.ALERT_BLUE));
-      return;
-    }
-    
-    if (stressLowAlertActive) {
-      rl.setAlert("Calm" + stressLevel.format(Format.INT), themeColor(Color.ALERT_GREEN));
-      return;
-    }
-    
-    rl.setAlert("", null);
+    setAlert(:alertNone, "", null);
   }
 
   function updateHearRate() {
     var hr = Activity.getActivityInfo().currentHeartRate;
-    // var hr = heartRate + 10;
+    // var hr = (heartRate + 10) % 300 + 1;
+    // var hr = 140;
     if (hr) {
       heartRate = hr;
 
@@ -270,15 +235,15 @@ class WF extends WatchUi.WatchFace {
     }
   }
 
-  // this function is called once per sec during highpower mode
+  // this function is called once per sec during isWatchActive mode
   // otherwise ad-hoc when system wants
   // this function is not called when onUpdate_1Min() gets called
   function onUpdate_Immediate() {
-    if (highpower) {
+    if (isWatchActive) {
       if (heartRate == 0) {
         // update during start when heartrate number not available
         updateHearRate();
-      }else if (heartRateZone >= Settings.get("updateHRZone")) {
+      }else if (heartRateZone >= settings.get("updateHRZone")) {
         // update heart rate when active if in zone specified by the setting
         updateHearRate();
       }
@@ -286,16 +251,46 @@ class WF extends WatchUi.WatchFace {
   }
 
   function onEnterPowerSaving() {
-    resetStressCounts();
+    setAlert(:alertNone, "", null);
   }
 
-  function resetStressCounts() {
-      stressLowCount = 0;
-      stressHighCount = 0;
-      noStressValueCount = 0;
+  function setAlert(alert, msg, color) {
+    if (activeAlert == alert) {
+      return;
+    }
 
-      stressLowAlertActive = false;
-      stressHighAlertActive = false;
+    if (alert != :alertStress) {
+      stressHighCount = 0;
+    }
+
+    /// Print changes in alert status
+    Log.log("Alert " + getAlertName(activeAlert) + " => " + getAlertName(alert));
+    
+    activeAlert = alert;
+    rl.setAlert(msg, color);
+  }
+
+  function getAlertName(alert) {
+    if (alert == :alertNone) { return "none"; }
+    if (alert == :alertHR) { return "HR"; }
+    if (alert == :alertStress) { return "stress"; }
+    if (alert == :alertMove) { return "move"; }
+
+    return "unknown";
+  }
+
+  function themeColor(sectionId as Number) as Number {
+    return Color._COLORS[theme * Color.MAX_COLOR_ID + sectionId];
+  }
+
+  function heartRateColor(sectionId as Number) as Number {
+    // var theme = settings.get("theme") as Number;
+    return Color._HR_COLORS[theme * 6 + sectionId];
+  }
+
+  function reloadSettings() {
+    settings.initSettings();
+    theme = settings.get("theme");
   }
 }
 

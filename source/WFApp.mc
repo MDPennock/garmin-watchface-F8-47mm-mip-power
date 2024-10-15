@@ -8,6 +8,8 @@ import Toybox.UserProfile;
 import Toybox.WatchUi;
 
 class WFApp extends Application.AppBase {
+  hidden var wf = null;
+
   function initialize() {
     AppBase.initialize();
     // Log.log("WFApp::initialize()");
@@ -25,16 +27,13 @@ class WFApp extends Application.AppBase {
 
   // Return the initial view of your application here
   function getInitialView() {
-    Settings.initSettings();
-    return [new WF()];
+    wf = new WF();
+    return [wf];
   }
 
-  // function getSettingsView() {
-  //   return [new WFSettingsView(), new WFSettingsDelegate()];
-  // }
+  function onSettingsChanged() {
+    wf.reloadSettings();
 
-  // New app settings have been received so trigger a UI update
-  // function onSettingsChanged() {
-  //   WatchUi.requestUpdate();
-  // }
+    WatchUi.requestUpdate();
+  }
 }

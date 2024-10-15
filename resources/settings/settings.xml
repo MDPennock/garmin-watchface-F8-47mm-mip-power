@@ -1,212 +1,50 @@
 <settings>
-  <!--<setting propertyKey="@Properties.layout" title="@Strings.SettingsLayoutTitle">
+  <setting propertyKey="@Properties.theme" title="Background color">
     <settingConfig type="list">
-      <listEntry value="0">@Strings.LayoutOrbit</listEntry>
-      <listEntry value="1">@Strings.LayoutCircles</listEntry>
+      <listEntry value="0">black</listEntry>
+      <listEntry value="1">white</listEntry>
     </settingConfig>
   </setting>
 
-  <setting propertyKey="@Properties.theme" title="@Strings.SettingsThemeTitle">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.ThemeExpanse</listEntry>
-      <listEntry value="1">@Strings.ThemeEarth</listEntry>
-      <listEntry value="2">@Strings.ThemeMars</listEntry>
-      <listEntry value="3">@Strings.ThemeBelt</listEntry>
-    </settingConfig>
-  </setting>
--->
-  <setting propertyKey="@Properties.caloriesGoal" title="@Strings.SettingsCaloriesGoalTitle">
-    <settingConfig type="numeric" min="1" max="9999" required="true"/>
-  </setting>
-
-  <!--
-
-  <setting propertyKey="@Properties.showSeconds" title="@Strings.SettingsShowSecondsTitle">
+  <setting propertyKey="@Properties.showSeconds" title="Show seconds when watch is active (garmin detects that you are looking at watch)">
     <settingConfig type="boolean" required="true"/>
   </setting>
 
-  <setting propertyKey="@Properties.showMeridiemText" title="@Strings.SettingsShowMeridiemTitle">
+  <setting propertyKey="@Properties.updateHRZone" title="Update heart rate (HR) during active when HR zone is higher and equal than X (by default HR updates once per minute)">
+    <settingConfig type="list">
+      <listEntry value="0">always (consumes most battery)</listEntry>
+      <listEntry value="1">1</listEntry>
+      <listEntry value="2">2</listEntry>
+      <listEntry value="3">3</listEntry>
+      <listEntry value="10">Disabled</listEntry>
+    </settingConfig>
+  </setting>
+
+  <setting propertyKey="@Properties.powerSavingMin" title="Enter power saving mode when inactive for more than X minutes">
+    <settingConfig type="list">
+      <listEntry value="5">5</listEntry>
+      <listEntry value="10">10</listEntry>
+      <listEntry value="15">15</listEntry>
+      <listEntry value="30">30</listEntry>
+      <listEntry value="60">60</listEntry>
+      <listEntry value="99999">Never</listEntry>
+    </settingConfig>
+  </setting>
+
+  <setting propertyKey="@Properties.heartRateAlert" title="Show RED ring light when HR is in zone 5 and above">
     <settingConfig type="boolean" required="true"/>
   </setting>
 
-  <setting propertyKey="@Properties.useSystemFontForDate" title="@Strings.SettingsUseSystemFontTitle">
-    <settingConfig type="boolean" required="true"/>
+  <setting propertyKey="@Properties.stressAlertLevel" title="Show ORANGE ring light when stress is above X for 3 min">
+        <settingConfig type="list">
+            <listEntry value="50">50 (consumes more battery)</listEntry>
+            <listEntry value="60">60</listEntry>
+            <listEntry value="70">70</listEntry>
+            <listEntry value="100">Disabled</listEntry>
+        </settingConfig>
   </setting>
 
-  <setting propertyKey="@Properties.sleepLayoutActive" title="@Strings.SettingsSleepTimeLayoutActiveTitle">
+  <setting propertyKey="@Properties.moveAlert" title="Show BLUE ring light when inactive for more than 2h. Reset by taking a short walk. This is based on Garmin move bar.">
     <settingConfig type="boolean" required="true"/>
   </setting>
-
-  <setting propertyKey="@Properties.activeHeartrate" title="@Strings.SettingsActiveHeartrateTitle">
-    <settingConfig type="boolean" required="true"/>
-  </setting>
-
-  <setting propertyKey="@Properties.batteryThreshold" title="@Strings.SettingsBatteryThresholdTitle">
-    <settingConfig type="numeric" min="1" max="100" required="true"/>
-  </setting>
-
-  <setting propertyKey="@Properties.noProgressDataField1" title="@Strings.SettingsSecondary1Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="5">@Strings.DataFieldHeartRate</listEntry>
-      <listEntry value="6">@Strings.DataFieldMessages</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="10">@Strings.DataFieldAlarms</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.noProgressDataField2" title="@Strings.SettingsSecondary2Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="5">@Strings.DataFieldHeartRate</listEntry>
-      <listEntry value="6">@Strings.DataFieldMessages</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="10">@Strings.DataFieldAlarms</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.noProgressDataField3" title="@Strings.SettingsSecondary3Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="5">@Strings.DataFieldHeartRate</listEntry>
-      <listEntry value="6">@Strings.DataFieldMessages</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="10">@Strings.DataFieldAlarms</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  <setting propertyKey="@Properties.showOrbitIndicatorText" title="@Strings.SettingsOrbitIndicatorTextTitle">
-    <settingConfig type="boolean" required="true"/>
-  </setting>
-  
-  <setting propertyKey="@Properties.outerOrbitDataField" title="@Strings.SettingsOuterOrbitTitle">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.leftOrbitDataField" title="@Strings.SettingsLeftOrbitTitle">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.rightOrbitDataField" title="@Strings.SettingsRightOrbitTitle">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.outerDataField" title="@Strings.SettingsOuterTitle">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.upperDataField1" title="@Strings.SettingsUpper1Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.upperDataField2" title="@Strings.SettingsUpper2Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.lowerDataField1" title="@Strings.SettingsLower1Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  
-  <setting propertyKey="@Properties.lowerDataField2" title="@Strings.SettingsLower2Title">
-    <settingConfig type="list">
-      <listEntry value="0">@Strings.NoDataField</listEntry>
-      <listEntry value="1">@Strings.DataFieldSteps</listEntry>
-      <listEntry value="2">@Strings.DataFieldBattery</listEntry>
-      <listEntry value="3">@Strings.DataFieldCalories</listEntry>
-      <listEntry value="4">@Strings.DataFieldActiveMinutes</listEntry>
-      <listEntry value="9">@Strings.DataFieldBluetooth</listEntry>
-      <listEntry value="7">@Strings.DataFieldFloorsUp</listEntry>
-      <listEntry value="8">@Strings.DataFieldFloorsDown</listEntry>
-      <listEntry value="11">@Strings.DataFieldBodyBattery</listEntry>
-      <listEntry value="13">@Strings.DataFieldStressLevel</listEntry>
-    </settingConfig>
-  </setting>
-  -->
 </settings>
