@@ -39,6 +39,7 @@ class WF extends WatchUi.WatchFace {
   var pc_update_immediate = 0; // how many times onUpdate_Immediate() was called
   var pc_draw_powersaving = 0;
   var pc_draw_regular = 0;
+  var pc_draw_ringAlert = 0;
 
   // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
   const _COLORS as Array<Number> = [
@@ -178,7 +179,11 @@ class WF extends WatchUi.WatchFace {
     }
     
     // alert ring
-    rl.draw(dc);
+    if (rl.hasAlert) {
+      rl.draw(dc);
+
+      pc_draw_ringAlert ++;
+    }
   }
 
   hidden function getHours(now, is12Hour) {
@@ -342,7 +347,14 @@ class WF extends WatchUi.WatchFace {
   }
 
   function checkPerfCounters() {
-    Log.log(format("perf: $1$ $2$ $3$ $4$", [pc_update_1min, pc_update_immediate, pc_draw_powersaving, pc_draw_regular]));
+    // How to read the perf counters
+    // first number: roughly how many minutes WF was used
+    // second number: roughly how many seconds WF was active, with once per sec update
+    // first + second number = total WF refresh counts, controlled by Garmin run-time
+    // third number: how many of the WF refresh was in power saving mode -- aim high for sleep hours
+    // fourth number: how many of the WF refresh was regular one with date and heartrate
+    // fifth number: how many of the WF refresh had ring alert -- this should increase battery usage
+    Log.log(format("perf: $1$ $2$ $3$ $4$ $5$", [pc_update_1min, pc_update_immediate, pc_draw_powersaving, pc_draw_regular, pc_draw_ringAlert]));
     
     pc_update_1min = 0;
     pc_update_immediate = 0;

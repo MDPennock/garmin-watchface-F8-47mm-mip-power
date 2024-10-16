@@ -10,7 +10,7 @@ class RingAlert {
   hidden var msgY;
   hidden var radius;
   hidden var weight;
-  hidden var hasAlert = false;
+  var hasAlert = false;
   hidden var alertMsg = "";
   hidden var color;
 
@@ -35,10 +35,6 @@ class RingAlert {
   }
 
   function draw(dc) {
-    if (! (hasAlert && color)) {
-      return;
-    }
-
     dc.setColor(color, Graphics.COLOR_TRANSPARENT);
     // setAntiAlias(dc, true);
     
