@@ -23,6 +23,7 @@ class WFApp extends Application.AppBase {
   // onStop() is called when your application is exiting
   function onStop(state) {
     // Log.log("WFApp::onStop " + state);
+    wf.checkPerfCounters();
   }
 
   // Return the initial view of your application here
