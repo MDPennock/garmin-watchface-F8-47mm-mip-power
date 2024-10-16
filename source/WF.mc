@@ -4,12 +4,6 @@ import Toybox.Graphics;
 import Toybox.System;
 import Toybox.Lang;
 
-module Format {
-  const INT_ZERO = "%02d";
-  const INT = "%i";
-  const FLOAT = "%2.0d";
-}
-
 class WF extends WatchUi.WatchFace {
   var rl = new RingAlert();
 
@@ -132,7 +126,6 @@ class WF extends WatchUi.WatchFace {
 
           onEnterPowerSaving();
         }
-        
       }
       
       onUpdate_1Min(now, powerSavingMode);
@@ -155,7 +148,7 @@ class WF extends WatchUi.WatchFace {
     }
 
     // battery
-    dc.drawText(237, 68, Graphics.FONT_TINY, battery.format(Format.INT) + "%", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(237, 68, Graphics.FONT_TINY, battery.format("%02d") + "%", Graphics.TEXT_JUSTIFY_RIGHT);
     // Date
     dc.drawText(48, 68, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
@@ -165,8 +158,7 @@ class WF extends WatchUi.WatchFace {
 
     // heartRate
     if (heartRate > 0) {
-      // dc.drawText(140, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-      dc.drawText(160, 225, Graphics.FONT_LARGE, heartRate.format(Format.INT), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(160, 225, Graphics.FONT_LARGE, heartRate.format("%02d"), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       
       if (heartRateZone > 0) {
         dc.setColor(heartRateColor(heartRateZone-1), Graphics.COLOR_TRANSPARENT);
@@ -188,12 +180,12 @@ class WF extends WatchUi.WatchFace {
         hours -= 12;
       }
     }
-    return hours.format(Format.INT_ZERO);
+    return hours.format("%02d");
   }
 
   function checkAlerts() {
     if (heartRateZone >= 5 && s_heartRateAlert) {
-      setAlert(:alertHR, "High HR", themeColor(4));
+      setAlert(:alertHR, "High Heart Rate", themeColor(4));
       return;
     }
 
@@ -210,7 +202,7 @@ class WF extends WatchUi.WatchFace {
         stressHighCount = 0;
       }
       if (stressHighCount >= 3) {
-        setAlert(:alertStress, "Stress " + stressLevel.format(Format.INT), themeColor(3));
+        setAlert(:alertStress, "High Stress", themeColor(3));
         return;
       }
     }
@@ -254,8 +246,8 @@ class WF extends WatchUi.WatchFace {
   // this function is called once every 1min
   function onUpdate_1Min(now, powerSavingMode) {
     var is12Hour = !System.getDeviceSettings().is24Hour;
-    dateToDraw = format("$1$ $2$", [now.day_of_week, now.day.format(Format.INT_ZERO)]);
-    timeToDraw = getHours(now, is12Hour) + ":" + now.min.format(Format.INT_ZERO);
+    dateToDraw = format("$1$ $2$", [now.day_of_week, now.day.format("%02d")]);
+    timeToDraw = getHours(now, is12Hour) + ":" + now.min.format("%02d");
 
     var b = System.getSystemStats().battery;
     if (battery != 0 && battery != b) {
@@ -276,11 +268,9 @@ class WF extends WatchUi.WatchFace {
   // this function is not called when onUpdate_1Min() gets called
   function onUpdate_Immediate() {
     if (isWatchActive) {
-      if (heartRate == 0) {
-        // update during start when heartrate number not available
-        updateHearRate();
-      }else if (heartRateZone >= s_updateHRZone) {
+      if (heartRateZone >= s_updateHRZone || heartRate == 0) {
         // update heart rate when active if in zone specified by the setting
+        // or when heartrate number not available
         updateHearRate();
       }
     }
