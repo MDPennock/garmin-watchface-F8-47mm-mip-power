@@ -7,41 +7,41 @@ import Toybox.Lang;
 class WF extends WatchUi.WatchFace {
   // var rl = new RingAlert();
 
-  var isWatchActive = true; // watch face is active, onupdate() will be called about once per sec
-  var lastMin = -1; // last time min updated  
-  var inactiveMin = 0; // how many minutes we are inactive
-  var powerSavingMode = false; // power saving mode when watch is inactive for some time
+  var isWatchActive as Boolean = true; // watch face is active, onupdate() will be called about once per sec
+  var lastMin as Number = -1; // last time min updated  
+  var inactiveMin as Number = 0; // how many minutes we are inactive
+  var powerSavingMode as Boolean = false; // power saving mode when watch is inactive for some time
 
-  var dateToDraw = "";
-  var timeToDraw = "";
+  var dateToDraw as String = "";
+  var timeToDraw as String = "";
   
-  var battery = 0;
-  var heartRateZone = 0;
-  var heartRate = 0;
+  var battery as Number = 0;
+  var heartRateZone as Number = 0;
+  var heartRate as Number = 0;
 
-  var iconFont;
+  var iconFont as WatchUi.FontResource;
 
   // Alerts
-  hidden var stressHighCount = 0;
-  hidden var activeAlert = :alertNone;
-  hidden var alertMsg = "";
-  hidden var alertColor = 0xAA0000;
+  hidden var stressHighCount as Number = 0;
+  hidden var activeAlert as Symbol = :alertNone;
+  hidden var alertMsg as String = "";
+  hidden var alertColor as Number = 0xAA0000;
 
   // Settings - for default value, go to properties.xml
-  var s_theme = 0;
-  var s_showSeconds = false;
-  var s_updateHRZone = 0;
-  var s_powerSavingMin = 0;
-  var s_heartRateAlert = 0;
-  var s_stressAlertLevel = 0;
-  var s_moveAlert = false;
+  var s_theme as Number = 0;
+  var s_showSeconds as Boolean = false;
+  var s_updateHRZone as Number = 0;
+  var s_powerSavingMin as Number = 0;
+  var s_heartRateAlert as Boolean = false;
+  var s_stressAlertLevel as Number = 0;
+  var s_moveAlert as Boolean = false;
 
   // perf counters
-  var pc_update_1min = 0; // how many times onUpdate_1Min() was called
-  var pc_update_immediate = 0; // how many times onUpdate_Immediate() was called
-  var pc_draw_powersaving = 0;
-  var pc_draw_regular = 0;
-  var pc_draw_ringAlert = 0;
+  var pc_update_1min as Number = 0; // how many times onUpdate_1Min() was called
+  var pc_update_immediate as Number = 0; // how many times onUpdate_Immediate() was called
+  var pc_draw_powersaving as Number = 0;
+  var pc_draw_regular as Number = 0;
+  var pc_draw_ringAlert as Number = 0;
 
   // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
   const _COLORS as Array<Number> = [
@@ -79,9 +79,9 @@ class WF extends WatchUi.WatchFace {
     WatchFace.initialize();    
     reloadSettings();
 
-    iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
+    iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont) as WatchUi.FontResource;
 
-    battery = System.getSystemStats().battery;
+    battery = System.getSystemStats().battery.toNumber();
     log("WF::initialize() - battery " + battery + "%");
   }
 
@@ -273,7 +273,7 @@ class WF extends WatchUi.WatchFace {
     dateToDraw = format("$1$ $2$", [now.day_of_week, now.day.format("%02d")]);
     timeToDraw = getHours(now, is12Hour) + ":" + now.min.format("%02d");
 
-    var b = System.getSystemStats().battery;
+    var b = System.getSystemStats().battery.toNumber();
     if (battery != 0 && battery != b) {
       // Logging battery changes
       log("Battery " + battery + "% to " + b + "%");
