@@ -39,6 +39,38 @@ class WF extends WatchUi.WatchFace {
   var s_heartRateAlert = 100;
   var s_stressAlertLevel = 70;
   var s_moveAlert = true;
+
+  // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
+  const _COLORS as Array<Number> = [
+    /* DARK */
+    Graphics.COLOR_BLACK, // BACKGROUND
+    Graphics.COLOR_WHITE, // PRIMARY
+    0xAAFFFF, // ALERT_BLUE
+    0xFFAA55, // ALERT_ORANGE
+    0xAA0000, // ALERT_RED,
+    /* LIGHT */
+    Graphics.COLOR_WHITE, // BACKGROUND
+    Graphics.COLOR_BLACK, // PRIMARY
+    0x00AAFF, // ALERT_BLUE
+    0xFFAA00, // ALERT_ORANGE
+    0xAA0000, // ALERT_RED,
+  ];
+
+  // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
+  const _HR_COLORS as Array<Number> = [
+    Graphics.COLOR_LT_GRAY, // zone-1 gray
+    Graphics.COLOR_BLUE, // zone 2 blue
+    0x55FF00, // zone 3 green
+    0xFFAA00, // zone 4 yellow
+    0xFF5555, // zone 5 orage
+    0xFF5555, // max red
+    Graphics.COLOR_DK_GRAY, // zone-1 gray
+    0x0055AA, // zone 2 blue
+    0x00AA00, // zone 3 green
+    0xFF5500, // zone 4 yellow
+    0xAA0000, // zone 5 orage
+    0xAA0000, // max red    
+  ];
   
   function initialize() {
     WatchFace.initialize();    
@@ -112,7 +144,7 @@ class WF extends WatchUi.WatchFace {
   }
 
   hidden function drawWF(dc, now) {
-    dc.setColor(themeColor(Color.PRIMARY), themeColor(Color.BACKGROUND));
+    dc.setColor(themeColor(1), themeColor(0));
     dc.clear();
 
     // time
@@ -161,7 +193,7 @@ class WF extends WatchUi.WatchFace {
 
   function checkAlerts() {
     if (heartRateZone >= 5 && s_heartRateAlert) {
-      setAlert(:alertHR, "High HR", themeColor(Color.ALERT_RED));
+      setAlert(:alertHR, "High HR", themeColor(4));
       return;
     }
 
@@ -178,7 +210,7 @@ class WF extends WatchUi.WatchFace {
         stressHighCount = 0;
       }
       if (stressHighCount >= 3) {
-        setAlert(:alertStress, "Stress " + stressLevel.format(Format.INT), themeColor(Color.ALERT_ORANGE));
+        setAlert(:alertStress, "Stress " + stressLevel.format(Format.INT), themeColor(3));
         return;
       }
     }
@@ -191,7 +223,7 @@ class WF extends WatchUi.WatchFace {
       }
       // movebar = ActivityMonitor.MOVE_BAR_LEVEL_MAX;
       if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
-        setAlert(:alertMove, "Time to Move", themeColor(Color.ALERT_BLUE));
+        setAlert(:alertMove, "Time to Move", themeColor(2));
         return;
       }
     }    
@@ -284,11 +316,11 @@ class WF extends WatchUi.WatchFace {
   }
 
   function themeColor(sectionId as Number) as Number {
-    return Color._COLORS[s_theme * Color.MAX_COLOR_ID + sectionId];
+    return _COLORS[s_theme * 5 + sectionId];
   }
 
   function heartRateColor(sectionId as Number) as Number {
-    return Color._HR_COLORS[s_theme * 6 + sectionId];
+    return _HR_COLORS[s_theme * 6 + sectionId];
   }
 
   function reloadSettings() {
