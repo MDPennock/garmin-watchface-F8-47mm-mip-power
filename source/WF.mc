@@ -5,7 +5,7 @@ import Toybox.System;
 import Toybox.Lang;
 
 class WF extends WatchUi.WatchFace {
-  var rl = new RingAlert();
+  // var rl = new RingAlert();
 
   var isWatchActive = true; // watch face is active, onupdate() will be called about once per sec
   var lastMin = -1; // last time min updated  
@@ -24,6 +24,8 @@ class WF extends WatchUi.WatchFace {
   // Alerts
   hidden var stressHighCount = 0;
   hidden var activeAlert = :alertNone;
+  hidden var alertMsg = "";
+  hidden var alertColor = 0xAA0000;
 
   // Settings - for default value, go to properties.xml
   var s_theme = 0;
@@ -80,12 +82,12 @@ class WF extends WatchUi.WatchFace {
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
 
     battery = System.getSystemStats().battery;
-    Log.log("WF::initialize() - battery " + battery + "%");
+    log("WF::initialize() - battery " + battery + "%");
   }
 
    // Resources are loaded here
   function onLayout(dc) {
-    rl.prepare(dc);
+    //rl.prepare(dc);
   }
 
   // Called when this View is brought to the foreground. Restore
@@ -117,7 +119,7 @@ class WF extends WatchUi.WatchFace {
     if (isWatchActive && (inactiveMin>0)) {
       if (powerSavingMode) {
         powerSavingMode = false;
-        Log.log("powersaving=>active, " + inactiveMin + " min inactive");
+        log("powersaving=>active, " + inactiveMin + " min inactive");
       }
       
       inactiveMin = 0;
@@ -128,7 +130,7 @@ class WF extends WatchUi.WatchFace {
       if (!isWatchActive) {
         inactiveMin ++;
         if (inactiveMin == s_powerSavingMin) {
-          Log.log("* => powersaving after " + inactiveMin + " min");
+          log("* => powersaving after " + inactiveMin + " min");
           powerSavingMode = true;
 
           onEnterPowerSaving();
@@ -150,7 +152,7 @@ class WF extends WatchUi.WatchFace {
     dc.clear();
 
     // time
-    dc.drawText(144, 140, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(140, 140, Graphics.FONT_NUMBER_THAI_HOT, timeToDraw, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
     if (powerSavingMode) {
       pc_draw_powersaving ++;
@@ -165,7 +167,7 @@ class WF extends WatchUi.WatchFace {
     dc.drawText(48, 68, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
     if (s_showSeconds && isWatchActive) {
-      dc.drawText(144, 186, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(140, 186, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }    
 
     // heartRate
@@ -179,8 +181,14 @@ class WF extends WatchUi.WatchFace {
     }
     
     // alert ring
-    if (rl.hasAlert) {
-      rl.draw(dc);
+    if (activeAlert != :alertNone) {
+      // rl.draw(dc);
+      dc.setColor(alertColor, Graphics.COLOR_TRANSPARENT);
+      // setAntiAlias(dc, true);
+      dc.setPenWidth(15);
+      dc.drawCircle(140, 140, 134);
+      // setAntiAlias(dc, false);
+      dc.drawText(140, 42, Graphics.FONT_SYSTEM_XTINY, alertMsg, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
       pc_draw_ringAlert ++;
     }
@@ -240,8 +248,8 @@ class WF extends WatchUi.WatchFace {
   }
 
   function updateHearRate() {
-    var hr = Activity.getActivityInfo().currentHeartRate;
-    // var hr = (heartRate + 10) % 300 + 1;
+    // var hr = Activity.getActivityInfo().currentHeartRate;
+    var hr = (heartRate + 10) % 300 + 1;
     // var hr = 140;
     if (hr) {
       heartRate = hr;
@@ -255,7 +263,7 @@ class WF extends WatchUi.WatchFace {
           break;
         }
       }
-      // Log.log("HR " + heartRate + " Zone " + heartRateZone);
+      // log("HR " + heartRate + " Zone " + heartRateZone);
     }
   }
 
@@ -268,7 +276,7 @@ class WF extends WatchUi.WatchFace {
     var b = System.getSystemStats().battery;
     if (battery != 0 && battery != b) {
       // Logging battery changes
-      Log.log("Battery " + battery + "% to " + b + "%");
+      log("Battery " + battery + "% to " + b + "%");
     }
     battery = b;
 
@@ -311,10 +319,12 @@ class WF extends WatchUi.WatchFace {
     }
 
     /// Print changes in alert status
-    Log.log("Alert " + getAlertName(activeAlert) + " => " + getAlertName(alert));
+    log("Alert " + getAlertName(activeAlert) + " => " + getAlertName(alert));
     
     activeAlert = alert;
-    rl.setAlert(msg, color);
+    alertMsg = msg;
+    alertColor = color;
+    //rl.setAlert(msg, color);
   }
 
   function getAlertName(alert) {
@@ -354,12 +364,18 @@ class WF extends WatchUi.WatchFace {
     // third number: how many of the WF refresh was in power saving mode -- aim high for sleep hours
     // fourth number: how many of the WF refresh was regular one with date and heartrate
     // fifth number: how many of the WF refresh had ring alert -- this should increase battery usage
-    Log.log(format("perf: $1$ $2$ $3$ $4$ $5$", [pc_update_1min, pc_update_immediate, pc_draw_powersaving, pc_draw_regular, pc_draw_ringAlert]));
+    log(format("perf: $1$ $2$ $3$ $4$ $5$", [pc_update_1min, pc_update_immediate, pc_draw_powersaving, pc_draw_regular, pc_draw_ringAlert]));
     
     pc_update_1min = 0;
     pc_update_immediate = 0;
     pc_draw_powersaving = 0;
     pc_draw_regular = 0;
+    pc_draw_ringAlert = 0;
+  }
+
+  function log(string) {
+    var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+    System.println(Lang.format("$1$:$2$:$3$: ", [now.hour,now.min,now.sec]) + string);
   }
 }
 
