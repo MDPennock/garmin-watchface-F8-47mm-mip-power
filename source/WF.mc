@@ -31,13 +31,18 @@ class WF extends WatchUi.WatchFace {
   hidden var stressHighCount = 0;
   hidden var activeAlert = :alertNone;
 
-  var settings = new WFSettings();
-  var theme = 1;
+  // Settings
+  var s_theme = 0;
+  var s_showSeconds = false;
+  var s_updateHRZone = 2;
+  var s_powerSavingMin = 10;
+  var s_heartRateAlert = 100;
+  var s_stressAlertLevel = 70;
+  var s_moveAlert = true;
   
   function initialize() {
-    WatchFace.initialize();
-    
-    reloadSettings(); // preload setting values (theme is read multiple times so good to cache)
+    WatchFace.initialize();    
+    reloadSettings();
 
     iconFont = WatchUi.loadResource(Rez.Fonts.IconsFont);
 
@@ -89,7 +94,7 @@ class WF extends WatchUi.WatchFace {
       lastMin = now.min;
       if (!isWatchActive) {
         inactiveMin ++;
-        if (inactiveMin == settings.get("powerSavingMin")) {
+        if (inactiveMin == s_powerSavingMin) {
           Log.log("* => powersaving after " + inactiveMin + " min");
           powerSavingMode = true;
 
@@ -122,7 +127,7 @@ class WF extends WatchUi.WatchFace {
     // Date
     dc.drawText(48, 68, Graphics.FONT_TINY, dateToDraw, Graphics.TEXT_JUSTIFY_LEFT);    
     // second
-    if (settings.get("showSeconds") && isWatchActive) {
+    if (s_showSeconds && isWatchActive) {
       dc.drawText(144, 186, Graphics.FONT_XTINY, now.sec, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }    
 
@@ -155,20 +160,19 @@ class WF extends WatchUi.WatchFace {
   }
 
   function checkAlerts() {
-    if (heartRateZone >= 5 && settings.get("heartRateAlert")) {
+    if (heartRateZone >= 5 && s_heartRateAlert) {
       setAlert(:alertHR, "High HR", themeColor(Color.ALERT_RED));
       return;
     }
 
-    var stressAlertLevel = settings.get("stressAlertLevel");
     // 100 is disabled
-    if (stressAlertLevel < 100 ) {
+    if (s_stressAlertLevel < 100 ) {
       var stressLevel = 0;
       var activityInfo = ActivityMonitor.getInfo();
       if (activityInfo.stressScore != null) {
         stressLevel = activityInfo.stressScore.toNumber();
       }
-      if (stressLevel>=stressAlertLevel) {
+      if (stressLevel>=s_stressAlertLevel) {
         stressHighCount ++;
       } else {
         stressHighCount = 0;
@@ -179,7 +183,7 @@ class WF extends WatchUi.WatchFace {
       }
     }
     
-    if (settings.get("moveAlert")) {
+    if (s_moveAlert) {
       var movebar = 0;
       var activityInfo = ActivityMonitor.getInfo();
       if (activityInfo.moveBarLevel != null) {
@@ -243,7 +247,7 @@ class WF extends WatchUi.WatchFace {
       if (heartRate == 0) {
         // update during start when heartrate number not available
         updateHearRate();
-      }else if (heartRateZone >= settings.get("updateHRZone")) {
+      }else if (heartRateZone >= s_updateHRZone) {
         // update heart rate when active if in zone specified by the setting
         updateHearRate();
       }
@@ -280,17 +284,23 @@ class WF extends WatchUi.WatchFace {
   }
 
   function themeColor(sectionId as Number) as Number {
-    return Color._COLORS[theme * Color.MAX_COLOR_ID + sectionId];
+    return Color._COLORS[s_theme * Color.MAX_COLOR_ID + sectionId];
   }
 
   function heartRateColor(sectionId as Number) as Number {
-    // var theme = settings.get("theme") as Number;
-    return Color._HR_COLORS[theme * 6 + sectionId];
+    return Color._HR_COLORS[s_theme * 6 + sectionId];
   }
 
   function reloadSettings() {
-    settings.initSettings();
-    theme = settings.get("theme");
+    s_theme = Properties.getValue("theme");
+    s_showSeconds = Properties.getValue("showSeconds");
+    s_updateHRZone = Properties.getValue("updateHRZone");
+
+    s_powerSavingMin = Properties.getValue("powerSavingMin");
+
+    s_heartRateAlert = Properties.getValue("heartRateAlert");
+    s_stressAlertLevel = Properties.getValue("stressAlertLevel");
+    s_moveAlert = Properties.getValue("moveAlert");
   }
 }
 
