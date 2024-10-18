@@ -5,6 +5,8 @@ is a minimalist Watch Face that maximizes battery life (40-50 days on Enduro 3 i
 * Colored heart rate zones
 * Contextural ring light for high HR, high stress and move bar
 
+Submitted to Garmin store: https://apps.garmin.com/apps/9db8afa7-631a-46f0-988a-8efab4f5fc3a
+
 # The story
 
 Garmin Enduro 3 is a great watch but unfortunately doesn't deliver on the promised 36 days of battery. Similarly to many other people on Garmin forums and reddit, my watch was consuming about 4-5% per day which translates to 20ish days without using any activities.
