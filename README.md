@@ -1,54 +1,75 @@
-![](https://services.garmin.com/appsLibraryBusinessServices_v0/rest/apps/0688f00f-64ce-4661-9ef3-464f02d56399/screenshots/bdcd8b9e-0350-495f-9980-f41778322826?raw=true)
+![](docs/cover.png?raw=true "Title")
 
-A Watchface for Garmin Smartwatches. The date and time and all numbers are based on the "broken" letters used in the television show The Expanse.
+# 40D MIP Power
+is a minimalist Watch Face that maximizes battery life (40-50 days on Enduro 3 instead of ~20 days), and optimized for MIP displays. Smart features for health tracking:
+* Colored heart rate zones
+* Contextural ring light for high HR, high stress and move bar
 
-Can now be found in the Garmin store: https://apps.garmin.com/en-US/apps/d9f524cc-b8e3-41df-b0d3-967b1743d165
+# The story
 
-### Priorities
+Garmin Enduro 3 is a great watch but unfortunately doesn't deliver on the promised 36 days of battery. Similarly to many other people on Garmin forums and reddit, my watch was consuming about 4-5% per day which translates to 20ish days without using any activities.
 
-* Battery life - goal to consume ~2.5% per day on Enduro 3 -- prioritize this over esthetic
-* Health tracking - HR, Stress and steps by default - not configurable
-* Smart Aura - reminder to reduce stress and HR
+So I decided to investigate, and the result is this watch face that consumes about 2-2.5% per day, giving you 40-50 days of MIP power!
 
-- Green - calm state, stress <30 during last 15 samples (one sample per min)
-- Yellow - move alert, inactive for 2h, time to take a walk
-- Orange - stress > 70 for more than 2 of 5 samples during last 5min (one sample per min)
-- Red - current heart rate in zone 5
+This battery consumption could be achieved on Enduro 3 on following settings:
+* minimum backlight level with 4s time out
+* Touch disabled
+* Gesture disabled
+* sound & alerts disabled
+* phone connection enabled
+* notifications disabled
+* Sleep watch face disabled
 
-### Optimizations
+The watch face has a built-in power saving mode and can last more than 12h for 1% during night. This is much more power efficient than the built in sleep watch face which only lasts around 10h for me.
 
-* Minimizing code running when updating the watch face
-  * Don't use View Layout as resource but rely on manual layout
-  * Minimize number graphics calls, e.g., don't paint minutes in different color
-  * Keep only minimum data fields during low power / always on mode
+You can further reduce battery by disabling the ring light features and disabling active HR update in watch face settings.
 
-* All data fields update once when it wakes up or every 15min in background
-* NOT NEEDED - Don't use data fields that have overlap with each out to avoid layered rendering
-* DOESNT WORK - Don't clear background on each display update
-* DOESNT WORK - Update data field and re-render only when data field has changed, e.g., hour should be refreshed only every 60min
+# Feature list
+
+* White background by default (configurable)
+* Configurable setting for showing seconds
+* The watch face and HR data updates once per minute by default to save power
+* HR update once per second once in zone 2 or above (configurable)
+* Colored heart rate zones - standard Garmin heart zone colors
+* Contextural ring light  (configurable)
+  * Blue - reminder to move after inactive for 2h, based on Garmin move bar
+  * Orange - stress level high during last 3min (one sample per min)
+  * Red - current heart rate in zone 5 or higher
+* Automatically switch to power saving mode (show time only) when inactive for 10 min (configurable)
+
+[!WARNING]
+Designed for MIP display only. There is not built-in burn-in protection needed for AMOLED displays
+
+# Design Priorities
+
+* Prioritize Battery life over esthetic
+* Heart rate tracking
+* Smart ring light - reminder to reduce stress and HR
+
+# How it works
+
+Without knowing enough details how the Garmin hardware consume battery through CPU, graphics, memory and display, this project tries to 
+* minimize the code and resources
+* minimize the graphics operations
+* minimize the display update
+
+Following strategies have been applied
+* Don't use View Layout as resource but rely on manual layout
+* Minimize number graphics calls, e.g., don't paint minutes in different color
+* Keep only minimum data fields during low power / always on mode
+* All data fields update once per minute
+* Minimize the icons used (no battery icon)
+* No custom fonts
+* Minimize class hierachy and no use of advanced data structure
+* power saving mode when watch is inactive for some time
 
 
-### Different Designs
+Follow strategies didn't work and was abandoned
+* Don't paint data fields that have overlap with each out to avoid layered rendering
+* Don't clear background on each display update
+* Update data field and re-render only when data field has changed, e.g., hour should be refreshed only every 60min
 
-- **Orbit** - Three Indicators that show the progress towards a certain goal
-- **Circles** - Five Indicators, one big ring that doesn't shows an icon and 4 small ones (two over and two under the date and time element) with a respective icon in the middle.
-- **(optional) Sleep Time** - Design that will active during the configured hours of sleep. Only showes the minimum datafields (currently not configurable).
-
-### Supported DataFields
-
-- Heartrate
-- Battery
-- Calories
-- Steps per Day
-- Active Minutes per Week
-- Floors Up / Down per Day
-- Notifcations
-- Alarms
-- Bluetooth connection status
-- Body Battery
-- Stress Level
 
 ### Attributions
 
-- Uses a slightly modified Version of the [DINish Font](https://github.com/playbeing/dinish) for the date and time elements.
-- Various icons used from and inspired by [The Noun Project](https://thenounproject.com/).
+* The project was initially forked from https://github.com/blotspot/garmin-watchface-protomolecule by blotspot
