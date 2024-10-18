@@ -248,9 +248,9 @@ class WF extends WatchUi.WatchFace {
   }
 
   function updateHearRate() {
-    // var hr = Activity.getActivityInfo().currentHeartRate;
-    var hr = (heartRate + 10) % 300 + 1;
-    // var hr = 140;
+    var hr = Activity.getActivityInfo().currentHeartRate;
+    // var hr = (heartRate + 10) % 300 + 1;
+    // var hr = 80;
     if (hr) {
       heartRate = hr;
 
@@ -374,8 +374,9 @@ class WF extends WatchUi.WatchFace {
   }
 
   function log(string) {
-    var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-    System.println(Lang.format("$1$:$2$:$3$: ", [now.hour,now.min,now.sec]) + string);
+    // Turn logging on to check perf counters
+    // var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+    // System.println(Lang.format("$1$:$2$:$3$: ", [now.hour,now.min,now.sec]) + string);
   }
 }
 
