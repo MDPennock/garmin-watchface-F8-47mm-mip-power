@@ -1,14 +1,10 @@
 import Toybox.Application;
-import Toybox.Application.Properties;
-import Toybox.Math;
-import Toybox.System;
-import Toybox.Time;
-import Toybox.Time.Gregorian;
-import Toybox.UserProfile;
+import Toybox.Background;
 import Toybox.WatchUi;
 
+(:background)
 class WFApp extends Application.AppBase {
-  hidden var wf = null;
+  hidden var wf as WF or Null;
 
   function initialize() {
     AppBase.initialize();
@@ -20,7 +16,7 @@ class WFApp extends Application.AppBase {
 
   // onStop() is called when your application is exiting
   function onStop(state) {
-    wf.checkPerfCounters();
+    (wf as WF).checkPerfCounters();
   }
 
   // Return the initial view of your application here
@@ -30,8 +26,25 @@ class WFApp extends Application.AppBase {
   }
 
   function onSettingsChanged() {
-    wf.reloadSettings();
+    (wf as WF).reloadSettings();
+
+    checkSleepBackground();
 
     WatchUi.requestUpdate();
   }
+
+  function checkSleepBackground() as Void {
+    var profile = UserProfile.getProfile();
+    var current = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+    current = new Time.Duration(current.hour * 3600 + current.min * 60);
+
+    if (profile.wakeTime.lessThan(profile.sleepTime)) {
+      Settings.isSleepTime = Settings.get("sleepLayoutActive") && (current.greaterThan(profile.sleepTime) || current.lessThan(profile.wakeTime));
+    } else if (profile.wakeTime.greaterThan(profile.sleepTime)) {
+      Settings.isSleepTime = Settings.get("sleepLayoutActive") && current.greaterThan(profile.sleepTime) && current.lessThan(profile.wakeTime);
+    } else {
+      Settings.isSleepTime = false;
+    }
+  }
+
 }

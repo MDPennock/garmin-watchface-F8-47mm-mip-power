@@ -6,6 +6,10 @@
     </settingConfig>
   </setting>
 
+  <setting propertyKey="@Properties.darkThemeDuringSleep" title="Switch to black background during sleep hours">
+    <settingConfig type="boolean" required="true"/>
+  </setting>
+
   <setting propertyKey="@Properties.showSeconds" title="Show seconds when watch is active (garmin detects that you are looking at watch)">
     <settingConfig type="boolean" required="true"/>
   </setting>

@@ -3,6 +3,8 @@ import Toybox.Application;
 import Toybox.Graphics;
 import Toybox.System;
 import Toybox.Lang;
+import Toybox.Time;
+import Toybox.Activity;
 
 class WF extends WatchUi.WatchFace {
   // var rl = new RingAlert();
@@ -29,6 +31,7 @@ class WF extends WatchUi.WatchFace {
 
   // Settings - for default value, go to properties.xml
   var s_theme as Number = 0;
+  var s_darkThemeDuringSleep as Boolean = false;
   var s_showSeconds as Boolean = false;
   var s_updateHRZone as Number = 0;
   var s_powerSavingMin as Number = 0;
@@ -86,34 +89,34 @@ class WF extends WatchUi.WatchFace {
   }
 
    // Resources are loaded here
-  function onLayout(dc) {
+  function onLayout(dc as Graphics.Dc) as Void {
     //rl.prepare(dc);
   }
 
   // Called when this View is brought to the foreground. Restore
   // the state of this View and prepare it to be shown. This includes
   // loading resources into memory.
-  function onShow() {
+  function onShow() as Void {
   }
 
   // Called when this View is removed from the screen. Save the
   // state of this View here. This includes freeing resources from
   // memory.
-  function onHide() {
+  function onHide() as Void {
   }
 
   // The user has just looked at their watch. Timers and animations may be started here.
-  function onExitSleep() {
+  function onExitSleep() as Void {
     isWatchActive = true;
   }
 
   // Terminate any active timers and prepare for slow updates.
-  function onEnterSleep() {
+  function onEnterSleep() as Void{
     isWatchActive = false;
   }
 
   // Update the view
-  function onUpdate(dc) {
+  function onUpdate(dc as Graphics.Dc) as Void{
     var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 
     if (isWatchActive && (inactiveMin>0)) {
@@ -147,7 +150,7 @@ class WF extends WatchUi.WatchFace {
     drawWF(dc, now);
   }
 
-  hidden function drawWF(dc, now) {
+  hidden function drawWF(dc as Graphics.Dc, now as Gregorian.Info) as Void {
     dc.setColor(themeColor(1), themeColor(0));
     dc.clear();
 
@@ -194,7 +197,7 @@ class WF extends WatchUi.WatchFace {
     }
   }
 
-  hidden function getHours(now, is12Hour) {
+  hidden function getHours(now as Gregorian.Info, is12Hour as Boolean) as String {
     var hours = now.hour;
     if (is12Hour) {
       if (hours == 0) {
@@ -207,7 +210,7 @@ class WF extends WatchUi.WatchFace {
     return hours.format("%02d");
   }
 
-  function checkAlerts() {
+  function checkAlerts() as Void {
     if (heartRateZone >= 5 && s_heartRateAlert) {
       setAlert(:alertHR, "High Heart Rate", themeColor(4));
       return;
@@ -218,7 +221,7 @@ class WF extends WatchUi.WatchFace {
       var stressLevel = 0;
       var activityInfo = ActivityMonitor.getInfo();
       if (activityInfo.stressScore != null) {
-        stressLevel = activityInfo.stressScore.toNumber();
+        stressLevel = activityInfo.stressScore as Number;
       }
       if (stressLevel>=s_stressAlertLevel) {
         stressHighCount ++;
@@ -235,7 +238,7 @@ class WF extends WatchUi.WatchFace {
       var movebar = 0;
       var activityInfo = ActivityMonitor.getInfo();
       if (activityInfo.moveBarLevel != null) {
-        movebar = activityInfo.moveBarLevel.toNumber();
+        movebar = activityInfo.moveBarLevel as Number;
       }
       // movebar = ActivityMonitor.MOVE_BAR_LEVEL_MAX;
       if (movebar == ActivityMonitor.MOVE_BAR_LEVEL_MAX) {
@@ -244,15 +247,20 @@ class WF extends WatchUi.WatchFace {
       }
     }    
 
-    setAlert(:alertNone, "", null);
+    setAlert(:alertNone, "", 0);
   }
 
-  function updateHearRate() {
-    var hr = Activity.getActivityInfo().currentHeartRate;
+  function updateHearRate() as Void {
+    var info = Activity.getActivityInfo(); 
+    if (info == null) {
+      return;
+    }
+
+    var hr = (info as Activity.Info).currentHeartRate;
     // var hr = (heartRate + 10) % 300 + 1;
     // var hr = 80;
     if (hr) {
-      heartRate = hr;
+      heartRate = hr as Number;
 
       var zones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_GENERIC);
       heartRateZone = 0;
@@ -268,7 +276,7 @@ class WF extends WatchUi.WatchFace {
   }
 
   // this function is called once every 1min
-  function onUpdate_1Min(now, powerSavingMode) {
+  function onUpdate_1Min(now as Gregorian.Info, powerSavingMode as Boolean) as Void {
     var is12Hour = !System.getDeviceSettings().is24Hour;
     dateToDraw = format("$1$ $2$", [now.day_of_week, now.day.format("%02d")]);
     timeToDraw = getHours(now, is12Hour) + ":" + now.min.format("%02d");
@@ -295,7 +303,7 @@ class WF extends WatchUi.WatchFace {
   // this function is called once per sec during isWatchActive mode
   // otherwise ad-hoc when system wants
   // this function is not called when onUpdate_1Min() gets called
-  function onUpdate_Immediate() {
+  function onUpdate_Immediate() as Void {
     if (isWatchActive) {
       if (heartRateZone >= s_updateHRZone || heartRate == 0) {
         // update heart rate when active if in zone specified by the setting
@@ -305,11 +313,11 @@ class WF extends WatchUi.WatchFace {
     }
   }
 
-  function onEnterPowerSaving() {
-    setAlert(:alertNone, "", null);
+  function onEnterPowerSaving() as Void {
+    setAlert(:alertNone, "", 0);
   }
 
-  function setAlert(alert, msg, color) {
+  function setAlert(alert as Symbol, msg as String, color as Number) as Void {
     if (activeAlert == alert) {
       return;
     }
@@ -327,7 +335,7 @@ class WF extends WatchUi.WatchFace {
     //rl.setAlert(msg, color);
   }
 
-  function getAlertName(alert) {
+  function getAlertName(alert as Symbol) as String {
     if (alert == :alertNone) { return "none"; }
     if (alert == :alertHR) { return "HR"; }
     if (alert == :alertStress) { return "stress"; }
@@ -344,19 +352,21 @@ class WF extends WatchUi.WatchFace {
     return _HR_COLORS[s_theme * 6 + sectionId];
   }
 
-  function reloadSettings() {
-    s_theme = Properties.getValue("theme");
-    s_showSeconds = Properties.getValue("showSeconds");
-    s_updateHRZone = Properties.getValue("updateHRZone");
+  function reloadSettings() as Void {
+    s_theme = Properties.getValue("theme") as Number;
+    s_darkThemeDuringSleep = Properties.getValue("darkThemeDuringSleep") as Boolean;
 
-    s_powerSavingMin = Properties.getValue("powerSavingMin");
+    s_showSeconds = Properties.getValue("showSeconds") as Boolean;
+    s_updateHRZone = Properties.getValue("updateHRZone") as Number;
 
-    s_heartRateAlert = Properties.getValue("heartRateAlert");
-    s_stressAlertLevel = Properties.getValue("stressAlertLevel");
-    s_moveAlert = Properties.getValue("moveAlert");
+    s_powerSavingMin = Properties.getValue("powerSavingMin") as Number;
+
+    s_heartRateAlert = Properties.getValue("heartRateAlert") as Boolean;
+    s_stressAlertLevel = Properties.getValue("stressAlertLevel") as Number;
+    s_moveAlert = Properties.getValue("moveAlert") as Boolean;
   }
 
-  function checkPerfCounters() {
+  function checkPerfCounters() as Void {
     // How to read the perf counters
     // first number: roughly how many minutes WF was used
     // second number: roughly how many seconds WF was active, with once per sec update
@@ -373,7 +383,7 @@ class WF extends WatchUi.WatchFace {
     pc_draw_ringAlert = 0;
   }
 
-  function log(string) {
+  function log(string as String) as Void {
     // Turn logging on to check perf counters
     // var now = Time.Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
     // System.println(Lang.format("$1$:$2$:$3$: ", [now.hour,now.min,now.sec]) + string);
