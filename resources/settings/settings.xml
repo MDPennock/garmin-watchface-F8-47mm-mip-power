@@ -6,7 +6,7 @@
     </settingConfig>
   </setting>
 
-  <setting propertyKey="@Properties.darkThemeDuringSleep" title="Switch to black background during sleep hours">
+  <setting propertyKey="@Properties.autoSwitchTheme" title="Switch to black background during sleep hours">
     <settingConfig type="boolean" required="true"/>
   </setting>
 

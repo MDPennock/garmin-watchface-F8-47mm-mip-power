@@ -1,7 +1,7 @@
 <!-- See settings.xml for explaination of the properties -->
 <properties>  
   <property id="theme" type="number">1</property>
-  <property id="darkThemeDuringSleep" type="boolean">true</property>
+  <property id="autoSwitchTheme" type="boolean">true</property>
   <property id="showSeconds" type="boolean">false</property>
   <property id="updateHRZone" type="number">2</property>
 

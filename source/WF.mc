@@ -7,21 +7,20 @@ import Toybox.Time;
 import Toybox.Activity;
 
 class WF extends WatchUi.WatchFace {
-  // var rl = new RingAlert();
+  // state variables
+  hidden var isWatchActive as Boolean = true; // watch face is active, onupdate() will be called about once per sec
+  hidden var lastMin as Number = -1; // last time min updated  
+  hidden var inactiveMin as Number = 0; // how many minutes we are inactive
+  hidden var powerSavingMode as Boolean = false; // power saving mode when watch is inactive for some time
 
-  var isWatchActive as Boolean = true; // watch face is active, onupdate() will be called about once per sec
-  var lastMin as Number = -1; // last time min updated  
-  var inactiveMin as Number = 0; // how many minutes we are inactive
-  var powerSavingMode as Boolean = false; // power saving mode when watch is inactive for some time
+  // data fields
+  hidden var dateToDraw as String = "";
+  hidden var timeToDraw as String = "";  
+  hidden var battery as Number = 0;
+  hidden var heartRateZone as Number = 0;
+  hidden var heartRate as Number = 0;
 
-  var dateToDraw as String = "";
-  var timeToDraw as String = "";
-  
-  var battery as Number = 0;
-  var heartRateZone as Number = 0;
-  var heartRate as Number = 0;
-
-  var iconFont as WatchUi.FontResource;
+  hidden var iconFont as WatchUi.FontResource;
 
   // Alerts
   hidden var stressHighCount as Number = 0;
@@ -30,21 +29,25 @@ class WF extends WatchUi.WatchFace {
   hidden var alertColor as Number = 0xAA0000;
 
   // Settings - for default value, go to properties.xml
-  var s_theme as Number = 0;
-  var s_darkThemeDuringSleep as Boolean = false;
-  var s_showSeconds as Boolean = false;
-  var s_updateHRZone as Number = 0;
-  var s_powerSavingMin as Number = 0;
-  var s_heartRateAlert as Boolean = false;
-  var s_stressAlertLevel as Number = 0;
-  var s_moveAlert as Boolean = false;
+  hidden var s_theme as Number = 0;
+  hidden var s_autoSwitchTheme as Boolean = false;
+  hidden var s_showSeconds as Boolean = false;
+  hidden var s_updateHRZone as Number = 0;
+  hidden var s_powerSavingMin as Number = 0;
+  hidden var s_heartRateAlert as Boolean = false;
+  hidden var s_stressAlertLevel as Number = 0;
+  hidden var s_moveAlert as Boolean = false;
+
+  // sleep time tracking to switch theme automatically
+  hidden var themeSwitchHour as Number = 0;  // the hour we need to switch
+  hidden var themeSwitchMin as Number = 0;  // the minute we need to switch
 
   // perf counters
-  var pc_update_1min as Number = 0; // how many times onUpdate_1Min() was called
-  var pc_update_immediate as Number = 0; // how many times onUpdate_Immediate() was called
-  var pc_draw_powersaving as Number = 0;
-  var pc_draw_regular as Number = 0;
-  var pc_draw_ringAlert as Number = 0;
+  hidden var pc_update_1min as Number = 0; // how many times onUpdate_1Min() was called
+  hidden var pc_update_immediate as Number = 0; // how many times onUpdate_Immediate() was called
+  hidden var pc_draw_powersaving as Number = 0;
+  hidden var pc_draw_regular as Number = 0;
+  hidden var pc_draw_ringAlert as Number = 0;
 
   // see colors at https://developer.garmin.com/connect-iq/user-experience-guidelines/incorporating-the-visual-design-and-product-personalities/
   const _COLORS as Array<Number> = [
@@ -289,7 +292,6 @@ class WF extends WatchUi.WatchFace {
     battery = b;
 
     if (now.min == 0) {
-      // full hour
       checkPerfCounters();
     }
       
@@ -297,6 +299,12 @@ class WF extends WatchUi.WatchFace {
       updateHearRate();
 
       checkAlerts();
+    }
+
+    if (s_autoSwitchTheme) {
+      if (now.hour == themeSwitchHour && now.hour >= themeSwitchMin) {
+        updateTheme();
+      }
     }
   }
 
@@ -354,8 +362,8 @@ class WF extends WatchUi.WatchFace {
 
   function reloadSettings() as Void {
     s_theme = Properties.getValue("theme") as Number;
-    s_darkThemeDuringSleep = Properties.getValue("darkThemeDuringSleep") as Boolean;
-
+    s_autoSwitchTheme = Properties.getValue("autoSwitchTheme") as Boolean;
+    
     s_showSeconds = Properties.getValue("showSeconds") as Boolean;
     s_updateHRZone = Properties.getValue("updateHRZone") as Number;
 
@@ -364,6 +372,47 @@ class WF extends WatchUi.WatchFace {
     s_heartRateAlert = Properties.getValue("heartRateAlert") as Boolean;
     s_stressAlertLevel = Properties.getValue("stressAlertLevel") as Number;
     s_moveAlert = Properties.getValue("moveAlert") as Boolean;
+
+    if (s_theme != 1) {
+      s_autoSwitchTheme = false; // only auto switch for white theme
+    }else if (s_autoSwitchTheme) {
+      updateTheme();
+    }
+  }
+
+  function updateTheme() as Void {
+    var profile = UserProfile.getProfile();
+    var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+    // duration is seconds since mid night 
+    var nowDuration = new Time.Duration(now.hour * 3600 + now.min * 60);
+    var wakeTime = profile.wakeTime as Time.Duration;
+    var sleepTime = profile.sleepTime as Time.Duration;
+    var isSleep = false;
+
+    if (wakeTime.lessThan(sleepTime)) {
+      // sleep time in day 0 and wake time in day 2
+      isSleep = (nowDuration.greaterThan(sleepTime) || nowDuration.lessThan(wakeTime));
+    } else if (wakeTime.greaterThan(sleepTime)) {
+      isSleep = (nowDuration.greaterThan(sleepTime) && nowDuration.lessThan(wakeTime));
+    } else {
+      s_autoSwitchTheme = false;
+    }
+
+    if (s_autoSwitchTheme) {
+      if (isSleep) {
+        s_theme = 0;
+
+        themeSwitchHour = wakeTime.value() / 3600;
+        themeSwitchMin = (wakeTime.value() % 3600) / 60;
+      }else {
+        s_theme = 1;
+
+        themeSwitchHour = sleepTime.value() / 3600;
+        themeSwitchMin = (sleepTime.value() % 3600) / 60;
+      }
+    }
+
+    log(format("sleep? $1$ - next switch $2$:$3$", [isSleep, themeSwitchHour, themeSwitchMin]));
   }
 
   function checkPerfCounters() as Void {
