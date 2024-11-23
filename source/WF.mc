@@ -390,10 +390,13 @@ class WF extends WatchUi.WatchFace {
     var isSleep = false;
 
     if (wakeTime.lessThan(sleepTime)) {
-      // sleep time in day 0 and wake time in day 2
-      isSleep = (nowDuration.greaterThan(sleepTime) || nowDuration.lessThan(wakeTime));
+      // sleep time in day 1 and wake time in day 2
+      // isSleep = (nowDuration.greaterThan(sleepTime) || nowDuration.lessThan(wakeTime));
+      isSleep = (nowDuration.compare(sleepTime)>=0 || nowDuration.lessThan(wakeTime));
     } else if (wakeTime.greaterThan(sleepTime)) {
-      isSleep = (nowDuration.greaterThan(sleepTime) && nowDuration.lessThan(wakeTime));
+      // sleep time and wake time same day
+      // isSleep = (nowDuration.greaterThan(sleepTime) && nowDuration.lessThan(wakeTime));
+      isSleep = (nowDuration.compare(sleepTime)>=0 && nowDuration.lessThan(wakeTime));
     } else {
       s_autoSwitchTheme = false;
     }
