@@ -302,7 +302,7 @@ class WF extends WatchUi.WatchFace {
     }
 
     if (s_autoSwitchTheme) {
-      if (now.hour == themeSwitchHour && now.hour >= themeSwitchMin) {
+      if (now.hour == themeSwitchHour && now.min >= themeSwitchMin) {
         updateTheme();
       }
     }
