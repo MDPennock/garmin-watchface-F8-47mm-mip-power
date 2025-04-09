@@ -1,5 +1,9 @@
 ![](docs/cover.png?raw=true "Title")
 
+# Note:
+Forked from the original 51mm only codebase (dryotta/garmin-watchface-40d-mip-power) to make a build for the F8 Solar 47mm.
+- All information below is from the original version, and will (maybe) get updated once battery use from a 47mm watch is available.
+
 # 40D MIP Power
 is a minimalist Watch Face that maximizes battery life (40-50 days on Enduro 3 instead of ~20 days), and optimized for MIP displays. Smart features for health tracking:
 * Colored heart rate zones
